@@ -1,0 +1,42 @@
+[package]
+name = "bulk-rename"
+version = "0.13.5"
+edition = "2021"
+
+[profile.release]
+strip = "symbols"
+opt-level = "s"
+lto = true
+
+[profile.dev]
+debug-assertions = false
+dead-code = false
+
+[dependencies]
+utils = { path = "C:/Users/Mel/Projects/rust/utils"}
+eframe = "*"
+egui = "*"
+egui_extras = "*"
+egui_plot = "*"
+whoami = "*"
+md-5 = "*"
+rfd = "*"
+rustc-serialize = "*"
+sha1 = "*"
+sha2 = "*"
+crc32fast = "*"
+time = { version = "*", features = ["formatting", "macros"] }
+chrono = "*"
+regex = "*"
+numerals = "*"
+alpha-counter = "*"
+json = "*"
+
+[target.'cfg(linux)'.dependencies]
+users = "*"
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "*", features = [ "Win32", "Win32_Storage", "Win32_Storage_FileSystem" ] }
+winapi = { version = "*", features = ["winnt", "wincon"] }
+
+
