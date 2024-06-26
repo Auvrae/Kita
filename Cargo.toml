@@ -13,7 +13,7 @@ debug-assertions = false
 dead-code = false
 
 [dependencies]
-utils = { path = "C:/Users/Mel/Projects/rust/utils"}
+utils = { path = "/home/auv/Projects/rust/utils"}
 eframe = "*"
 egui = "*"
 egui_extras = "*"
