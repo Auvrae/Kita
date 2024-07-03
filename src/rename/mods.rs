@@ -1,7 +1,7 @@
 use super::util::threads::{HashMode, HashType, Endianness};
 
 // Modifiers
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Modifiers {
     pub add: Vec<ModAdd>,
     pub case: Vec<ModCase>,
@@ -32,7 +32,7 @@ pub struct Modifiers {
 }
 
 // Generic Enum for ordering in GUI
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub enum ModsOrder {
     Add,
     Case,
@@ -80,7 +80,7 @@ impl Default for Modifiers {
 }
 
 // Add
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModAdd {
     pub prefix: String,
     pub insert: String,
@@ -103,7 +103,7 @@ impl Default for ModAdd {
 }
 
 // Append Folder
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModAppFolder {
     pub widgets_enabled: bool,
     pub mode_name: String,
@@ -126,7 +126,7 @@ impl Default for ModAppFolder {
 }
 
 // Case
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModCase{
     pub mode: CaseMode,
     pub widgets_enabled: bool,
@@ -138,7 +138,7 @@ pub struct ModCase{
     pub except_from: u32,
     pub except_to: u32
 }
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum CaseMode {
     Same,
     Upper,
@@ -147,7 +147,7 @@ pub enum CaseMode {
     UpperFirst
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum CaseExecptMode {
     None,
     FromTo,
@@ -170,7 +170,7 @@ impl Default for ModCase {
 }
 
 // Date
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModDate {
     pub mode: DateMode,
     pub mode_name: String,
@@ -192,14 +192,14 @@ pub struct ModDate {
     pub custom_enabled: bool,
     pub century: bool
 }
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum DateMode {
     None,
     Prefix,
     Suffix,
     Insert
 }
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum DateFormatMode {
     Y,
     MY,
@@ -219,7 +219,7 @@ pub enum DateFormatMode {
     Custom
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum DateSeperator {
     None,
     Space,
@@ -262,7 +262,7 @@ impl Default for ModDate {
 }
 
 // Extension
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModExtension {
     pub mode: ExtensionMode,
     pub mode_name: String,
@@ -270,7 +270,7 @@ pub struct ModExtension {
     pub fixed: String,
     pub extra: String
 }
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum ExtensionMode {
     Same,
     Upper,
@@ -293,7 +293,7 @@ impl Default for ModExtension {
 }
 
 // Hashing
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModHashing {
     pub mode: HashMode,
     pub mode_name: String,
@@ -319,7 +319,7 @@ impl Default for ModHashing {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum HashSeperator {
     None,
     Space,
@@ -336,7 +336,7 @@ pub enum HashSeperator {
 }
 
 // Move / Copy
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModMoveCopy {
     pub mode_from: MoveCopyFromMode,
     pub mode_from_name: String,
@@ -349,7 +349,7 @@ pub struct ModMoveCopy {
     pub seperator: char,
     pub seperator_enabled: bool
 }
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum MoveCopyFromMode {
     None,
     CopyFirstN,
@@ -357,7 +357,7 @@ pub enum MoveCopyFromMode {
     MoveFirstN,
     MoveLastN
 }
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum MoveCopyToMode {
     None,
     ToStart,
@@ -383,14 +383,14 @@ impl Default for ModMoveCopy {
 
 
 // Name
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModName {
     pub mode: NameMode,
     pub mode_name: String,
     pub widgets_enabled: bool,
     pub fixed: String
 }
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum NameMode {
     Keep,
     Remove,
@@ -409,7 +409,7 @@ impl Default for ModName {
 }
 
 // Numbering
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModNumber {
     pub mode: NumberMode,
     pub mode_name: String,
@@ -424,7 +424,7 @@ pub struct ModNumber {
     pub mode_type: NumberTypeMode,
     pub mode_type_name: String
 }
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum NumberMode {
     None,
     Prefix,
@@ -432,7 +432,7 @@ pub enum NumberMode {
     Insert,
     PrefixAndSuffix
 }
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum NumberTypeMode {
     BaseTwo,
     BaseEight,
@@ -463,7 +463,7 @@ impl Default for ModNumber {
 }
 
 // Regex
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModRegex {
     pub replace_match: String,
     pub replace_with: String
@@ -479,7 +479,7 @@ impl Default for ModRegex {
 }
 
 // Remove
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModRemove {
     pub first_n: u32,
     pub last_n: u32,
@@ -499,7 +499,7 @@ pub struct ModRemove {
     pub symbols: bool,
     pub leading_dots: bool
 }
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum RemoveCropMode {
     None,
     Before,
@@ -530,7 +530,7 @@ impl Default for ModRemove {
 }
 
 // Replace
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ModReplace {
     pub replace_match: String,
     pub replace_with: String,

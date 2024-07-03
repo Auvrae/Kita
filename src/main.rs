@@ -1,11 +1,12 @@
 #![windows_subsystem = "windows"]
-#![allow(dead_code, unused_variables)]
+#![allow(dead_code, unused_variables, unused_imports)]
 
 mod rename;
 
 use eframe::egui;
 use egui_extras;
 use rename::app::WindowMain;
+use rename::util::config;
 
 #[cfg(target_os="windows")]
 use winapi::um::wincon::{AttachConsole, FreeConsole, ATTACH_PARENT_PROCESS}; 
@@ -46,7 +47,7 @@ fn main() -> Result<(), eframe::Error> {
         Box::new(|cc| {
             // This gives us image support:
             egui_extras::install_image_loaders(&cc.egui_ctx);
-            Box::new(main)
+            Ok(Box::new(main))
         }),
     )
 }

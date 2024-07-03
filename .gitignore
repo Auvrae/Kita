@@ -1,0 +1,4 @@
+.git/
+target/
+version_history/
+Cargo.lock

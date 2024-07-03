@@ -18,6 +18,10 @@ pub fn modifications(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Conte
             // Header
             ui.horizontal(|ui| {
                 ui.strong("Modifiers").on_hover_text("Order -> Priority");
+                
+                ui.add_space(25.0);
+                
+
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
                     let reset = ui.add_enabled(true, egui::Button::new("⟲".to_string()));
                     if reset.clicked() {
@@ -639,7 +643,7 @@ fn fill_modadd(gui: &mut WindowMain, ui: &mut egui::Ui, add: &mut ModAdd) -> (Mo
         ui.label("at");
         let drag = ui.add_enabled(true, 
             egui::DragValue::new(&mut add.insert_at)
-            .clamp_range(-255..=255)
+            .range(-255..=255)
             .speed(0.05)
         );
 
@@ -739,7 +743,7 @@ fn fill_modcase(gui: &mut WindowMain, ui: &mut egui::Ui, case: &mut ModCase, ind
                         ui.label("From");
                         let drag = ui.add_enabled(true, 
                             egui::DragValue::new(&mut case.except_from)
-                            .clamp_range(0..=255)
+                            .range(0..=255)
                             .speed(0.05)
                             
                         );
@@ -770,7 +774,7 @@ fn fill_modcase(gui: &mut WindowMain, ui: &mut egui::Ui, case: &mut ModCase, ind
                         ui.label("To");
                         let drag = ui.add_enabled(true, 
                             egui::DragValue::new(&mut case.except_to)
-                            .clamp_range(case.except_from..=255)
+                            .range(case.except_from..=255)
                             .speed(0.05)
                         );
 
@@ -863,7 +867,7 @@ fn fill_moddate(gui: &mut WindowMain, ui: &mut egui::Ui, date: &mut ModDate, ind
                 ui.label("at");
                 let drag = ui.add_enabled(true, 
                     egui::DragValue::new(&mut date.at_pos)
-                    .clamp_range(-255..=255)
+                    .range(-255..=255)
                     .speed(0.05)
                 );
 
@@ -1372,7 +1376,7 @@ fn fill_modmovecopy(gui: &mut WindowMain, ui: &mut egui::Ui, movecopy: &mut ModM
                 ui.label("N");
                 let drag = ui.add_enabled(true, 
                     egui::DragValue::new(&mut movecopy.letters_count)
-                    .clamp_range(0..=255)
+                    .range(0..=255)
                     .speed(0.05)
                 );
 
@@ -1429,7 +1433,7 @@ fn fill_modmovecopy(gui: &mut WindowMain, ui: &mut egui::Ui, movecopy: &mut ModM
                 ui.label("pos");
                 let drag = ui.add_enabled(true, 
                     egui::DragValue::new(&mut movecopy.mode_to_pos)
-                    .clamp_range(0..=255)
+                    .range(0..=255)
                     .speed(0.05)
                 );
 
@@ -1587,7 +1591,7 @@ fn fill_modnumber(gui: &mut WindowMain, ui: &mut egui::Ui, number: &mut ModNumbe
                 ui.label("at");
                 let drag = ui.add_enabled(true, 
                     egui::DragValue::new(&mut number.insert_at)
-                    .clamp_range(-255..=255)
+                    .range(-255..=255)
                     .speed(0.05)
                 );
 
@@ -1617,7 +1621,7 @@ fn fill_modnumber(gui: &mut WindowMain, ui: &mut egui::Ui, number: &mut ModNumbe
                 ui.label("Starting");
                 let drag = ui.add_enabled(true, 
                     egui::DragValue::new(&mut number.starting_num)
-                    .clamp_range(0..=25565)
+                    .range(0..=25565)
                     .speed(0.05)
                 );
 
@@ -1646,7 +1650,7 @@ fn fill_modnumber(gui: &mut WindowMain, ui: &mut egui::Ui, number: &mut ModNumbe
                 ui.label("Increment");
                 let drag_increment = ui.add_enabled(true, 
                     egui::DragValue::new(&mut number.increment_num)
-                    .clamp_range(1..=255)
+                    .range(1..=255)
                     .speed(0.05)
                 );
                 if drag_increment.hovered() && ui.input(|input| {input.raw_scroll_delta.y >= 1.0}){
@@ -1673,7 +1677,7 @@ fn fill_modnumber(gui: &mut WindowMain, ui: &mut egui::Ui, number: &mut ModNumbe
                 ui.label("Padding");
                 let drag_increment = ui.add_enabled(true, 
                     egui::DragValue::new(&mut number.padding)
-                    .clamp_range(0..=255)
+                    .range(0..=255)
                     .speed(0.05)
                 );
 
@@ -1815,7 +1819,7 @@ fn fill_modremove(gui: &mut WindowMain, ui: &mut egui::Ui, remove: &mut ModRemov
                 ui.label("First");
                 let drag_first = ui.add_enabled(true, 
                     egui::DragValue::new(&mut remove.first_n)
-                    .clamp_range(0..=255)
+                    .range(0..=255)
                     .speed(0.05)
                 );
 
@@ -1846,7 +1850,7 @@ fn fill_modremove(gui: &mut WindowMain, ui: &mut egui::Ui, remove: &mut ModRemov
                 ui.label("Last");
                 let drag_last = ui.add_enabled(true, 
                     egui::DragValue::new(&mut remove.last_n)
-                    .clamp_range(0..=255)
+                    .range(0..=255)
                     .speed(0.05)
                 );
 
@@ -1878,7 +1882,7 @@ fn fill_modremove(gui: &mut WindowMain, ui: &mut egui::Ui, remove: &mut ModRemov
                 ui.label("From");
                 let drag_from = ui.add_enabled(true, 
                     egui::DragValue::new(&mut remove.from_x)
-                    .clamp_range(0..=25565)
+                    .range(0..=25565)
                     .speed(0.05)
                 );
 
@@ -1909,7 +1913,7 @@ fn fill_modremove(gui: &mut WindowMain, ui: &mut egui::Ui, remove: &mut ModRemov
                 ui.label("To");
                 let drag_to = ui.add_enabled(true, 
                     egui::DragValue::new(&mut remove.to_y)
-                    .clamp_range(remove.from_x..=25565)
+                    .range(remove.from_x..=25565)
                     .speed(0.05)
                 );
 

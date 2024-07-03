@@ -40,7 +40,7 @@ pub fn thread(gui: &mut app::WindowMain, func: ThreadFunction) -> JoinHandle<()>
                 for _ in 1..=paths.len() {internal_hashes.push((String::new(), 0, 0))};
                 
                 // Make thread groups
-                let cpu_threads = std::thread::available_parallelism().unwrap().get() * 2;
+                let cpu_threads = 4 as usize; //std::thread::available_parallelism().unwrap().get();
                 let mut paths = paths;
                 paths.reverse();
                 let groups: u32 = (paths.len() as f32 / cpu_threads as f32).ceil() as u32;
@@ -275,7 +275,7 @@ impl Default for ThreadStorage {
     }
 }
 
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Clone, Debug, Copy)]
 pub enum HashMode {
     None,
     Prefix,
@@ -283,7 +283,7 @@ pub enum HashMode {
     File
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum HashType {
     CRC32,
     MD5,
@@ -291,7 +291,7 @@ pub enum HashType {
     Sha256
 }
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ThreadState {
     None,
     Saving,
@@ -308,7 +308,7 @@ pub enum ThreadFunction {
     StringProcessing(u8)
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Debug, Copy)]
 pub enum Endianness {
     BigEndian,
     _LittleEndian

@@ -31,6 +31,14 @@ pub fn browser(gui: &mut WindowMain, ui: &mut egui::Ui, ctx: &egui::Context) {
                 }
                 
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
+                    let collapse_button = ui.button("⬅");
+                    if collapse_button.clicked() {
+                        gui.file_browser.collapsed = !gui.file_browser.collapsed;
+                    }
+                    if collapse_button.hovered() {
+                        collapse_button.on_hover_text("Collapse file browser");
+                    }
+
                     let button = ui.button("⟲");
                     if button.clicked() {
                         #[cfg(target_os="windows")] {
@@ -38,10 +46,13 @@ pub fn browser(gui: &mut WindowMain, ui: &mut egui::Ui, ctx: &egui::Context) {
                                 gui.file_browser.roots = gui.read_directory(String::from(gui.file_mounts[0].clone()), true, vec![]);
                                 gui.file_mounts_selected = 0;
                                 gui.file_browser.selected_children.clear();
+                                gui.file_browser.selected_children_paths.clear();
                             }
                         }
                         #[cfg(target_os="linux")] {
                             gui.file_browser.roots = gui.read_directory(String::from("/"), true, vec![]);
+                            gui.file_browser.selected_children.clear();
+                            gui.file_browser.selected_children_paths.clear();
                         }
                     };
                     if button.hovered() {
@@ -192,6 +203,7 @@ pub struct FileBrowser {
     pub selected_children: Vec<Vec<u32>>,
     pub files_werent_modified: bool, // A bool that changes based on if anything has changed any of the files.
     pub allow_frame: bool,
+    pub collapsed: bool
 }
 
 #[derive(Clone, Debug)]

@@ -246,33 +246,43 @@ impl eframe::App for WindowMain {
                 let section_selector_width = (inner_size.x - 65.0) as u32 - (section_browser_width + section_options_width);
 
                 ui.horizontal(|ui| { ui.group(|ui| {
-                    // File Browser
-                    ui.group(|ui| {
-                        // Set UI Group Size
-                        ui.set_height(inner_size.y - 24.0);
-                        ui.set_width(section_browser_width as f32);
-                        ui.set_max_width(section_browser_width as f32);
+                    ui.with_layout(egui::Layout::right_to_left(egui::Align::RIGHT), |ui| {
+                        // Modifiers
+                        ui.group(|ui| {
+                            // Set UI Group Size
+                            ui.set_height(inner_size.y - 24.0);
+                            ui.set_max_height(inner_size.y - 24.0);
+                            ui.set_width(section_options_width as f32);
+                            ui.set_max_width(section_options_width as f32);
 
-                        file_browser::browser(self, ui, ctx); // Fill File Browser section
-                    });
-                    // File Selector
-                    ui.group(|ui| {
-                        // Set UI Group Size
-                        ui.set_height(inner_size.y - 24.0);
-                        ui.set_width(section_selector_width as f32);
-                        ui.set_max_width(section_selector_width as f32);
+                            file_modifications::modifications(self, ui, ctx); // Fill Modifiers section
+                        });
+                        // File Selector
+                        ui.group(|ui| {
+                            if self.file_browser.collapsed == true {
+                                // Set UI Group Size
+                                ui.set_height(inner_size.y - 24.0);
+                                ui.set_width((section_selector_width + section_browser_width) as f32 + 20.0);
+                                ui.set_max_width(section_selector_width as f32);
+                            } else {
+                                // Set UI Group Size
+                                ui.set_height(inner_size.y - 24.0);
+                                ui.set_width(section_selector_width as f32);
+                                ui.set_max_width(section_selector_width as f32);
+                            }
 
-                        file_selector::selector(self, ui, ctx); // Fill File Selector section
-                    });
-                    // Modifiers
-                    ui.group(|ui| {
-                        // Set UI Group Size
-                        ui.set_height(inner_size.y - 24.0);
-                        ui.set_max_height(inner_size.y - 24.0);
-                        ui.set_width(section_options_width as f32);
-                        ui.set_max_width(section_options_width as f32);
-
-                        file_modifications::modifications(self, ui, ctx); // Fill Modifiers section
+                            file_selector::selector(self, ui, ctx); // Fill File Selector section
+                        });
+                        // File Browser
+                        if self.file_browser.collapsed == false {
+                            ui.group(|ui| {
+                                // Set UI Group Size
+                                ui.set_height(inner_size.y - 24.0);
+                                ui.set_width(section_browser_width as f32);
+                                ui.set_max_width(section_browser_width as f32);
+                                file_browser::browser(self, ui, ctx); // Fill File Browser section
+                            });
+                        };
                     });
                 })});
             });

@@ -39,6 +39,15 @@ pub fn selector(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
             ui.vertical(|ui| {
                 // Header
                 ui.horizontal(|ui| {
+                    if gui.file_browser.collapsed == true {
+                        let collapse_button = ui.button("➡");
+                        if collapse_button.clicked() {
+                            gui.file_browser.collapsed = !gui.file_browser.collapsed;
+                        };
+                        if collapse_button.hovered() {
+                            collapse_button.on_hover_text("Restore file browser");
+                        };
+                    }
                     ui.strong("File Selection");
                 });
                 ui.separator();

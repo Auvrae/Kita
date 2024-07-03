@@ -9,6 +9,7 @@ use rustc_serialize::hex::ToHex;
 
 use super::threads;
 
+#[derive(Clone, Debug)]
 pub enum HashType {
     CRC32,
     MD5,

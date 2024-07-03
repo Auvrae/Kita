@@ -100,7 +100,7 @@ impl Default for WindowMain {
                 preset_manager_id: egui::Id::from(utils::create_random_string(8)),
                 quit: false,
                 quit_id: egui::Id::from(utils::create_random_string(8)),
-                debug: true,
+                debug: false,
                 debug_id: egui::Id::from(utils::create_random_string(8)),
                 debug_plot_id: egui::Id::from(utils::create_random_string(8))
             },
@@ -110,6 +110,7 @@ impl Default for WindowMain {
             file_browser: FileBrowser {
                 allow_frame: true,
                 files_werent_modified: true,
+                collapsed: false,
                 ..Default::default()
             },
             
@@ -404,6 +405,8 @@ impl WindowMain {
         *self.thread_storage.progress.lock().unwrap() = 0.00;
         thread(self, ThreadFunction::SaveUndoRedo(edit));
     }
+
+    
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

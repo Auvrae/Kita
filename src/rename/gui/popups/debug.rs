@@ -41,7 +41,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
             .clamp_grid(true)
             .allow_scroll(false)
             .show_axes(egui::Vec2b::new(false, true))
-            .y_axis_formatter(|mut grid, _, _| {
+            .y_axis_formatter(|mut grid, _| {
                 grid.step_size = 2.0;
                 String::from(format!("{}", grid.value))
             })
@@ -93,7 +93,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
             .clamp_grid(true)
             .allow_scroll(false)
             .show_axes(egui::Vec2b::new(false, true))
-            .y_axis_formatter(|mut grid, _, _| {
+            .y_axis_formatter(|mut grid, _| {
                 grid.step_size = 2.0;
                 String::from(format!("{}", grid.value))
             })
@@ -145,7 +145,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
             .clamp_grid(true)
             .allow_scroll(false)
             .show_axes(egui::Vec2b::new(false, true))
-            .y_axis_formatter(|mut grid, _, _| {
+            .y_axis_formatter(|mut grid, _| {
                 grid.step_size = 2.0;
                 String::from(format!("{}", grid.value))
             })
@@ -197,7 +197,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
             .clamp_grid(true)
             .allow_scroll(false)
             .show_axes(egui::Vec2b::new(false, true))
-            .y_axis_formatter(|mut grid, _, _| {
+            .y_axis_formatter(|mut grid, _| {
                 grid.step_size = 2.0;
                 String::from(format!("{}", grid.value))
             })
@@ -249,7 +249,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
             .clamp_grid(true)
             .allow_scroll(false)
             .show_axes(egui::Vec2b::new(false, true))
-            .y_axis_formatter(|mut grid, _, _| {
+            .y_axis_formatter(|mut grid, _| {
                 grid.step_size = 2.0;
                 String::from(format!("{}", grid.value))
             })

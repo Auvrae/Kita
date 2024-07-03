@@ -1,6 +1,6 @@
 [package]
-name = "bulk-rename"
-version = "0.13.5"
+name = "kita"
+version = "0.13.6"
 edition = "2021"
 
 [profile.release]
@@ -10,14 +10,13 @@ lto = true
 
 [profile.dev]
 debug-assertions = false
-dead-code = false
 
 [dependencies]
 utils = { path = "/home/auv/Projects/rust/utils"}
-eframe = "*"
-egui = "*"
-egui_extras = "*"
-egui_plot = "*"
+egui = { path = "/home/auv/Source/egui/crates/egui" }
+eframe = { path = "/home/auv/Source/egui//crates/eframe" }
+egui_extras = { path = "/home/auv/Source/egui/crates/egui_extras" }
+egui_plot = { path = "/home/auv/Source/egui/crates/egui_plot" }
 whoami = "*"
 md-5 = "*"
 rfd = "*"
