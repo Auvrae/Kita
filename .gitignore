@@ -1,4 +1,5 @@
 .git/
 target/
+dependencies/
 version_history/
 Cargo.lock
