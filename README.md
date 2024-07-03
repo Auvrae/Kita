@@ -11,7 +11,7 @@ Kita Rename Utility is a highly customizable renaming utlity written in rust. Th
 
 **GUI**: [egui](https://github.com/emilk/egui) - An immediate mode native GUI framework.
 
-**File Hashing** [MD5 / Sha1 / Sha256](https://github.com/RustCrypto/hashes) - Collection of cryptographic hash functions written in pure RustCrypto
+**File Hashing** [MD5 / Sha1 / Sha256](https://github.com/RustCrypto/hashes) - Collection of cryptographic hash functions written in pure Rust
 
 **Config Files** [JSON](https://github.com/maciejhirsz/json-rust) - JSON implementation in Rust 
 
