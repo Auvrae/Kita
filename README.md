@@ -71,7 +71,7 @@ Kita Rename Utility is a highly customizable renaming utlity written in rust. Th
       - Roman Numeral
       - Alpha Lower
       - Alpha Upper
-      - Alphs Lower to Upper
+      - Alpha Lower to Upper
     - Customizable Seperator
     - Padding
   - ✓ Regex
