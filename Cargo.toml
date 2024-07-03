@@ -12,11 +12,11 @@ lto = true
 debug-assertions = false
 
 [dependencies]
-utils = { path = "/home/auv/Projects/rust/utils"}
-egui = { path = "/home/auv/Source/egui/crates/egui" }
-eframe = { path = "/home/auv/Source/egui/crates/eframe" }
-egui_extras = { path = "/home/auv/Source/egui/crates/egui_extras" }
-egui_plot = { path = "/home/auv/Source/egui/crates/egui_plot" }
+utils = { path = "./dependencies/rust-utils"}
+egui = { path = "./dependencies/egui/crates/egui" }
+eframe = { path = "./dependencies/egui/crates/eframe" }
+egui_extras = { path = "./dependencies/egui/crates/egui_extras" }
+egui_plot = { path = "./dependencies/egui/crates/egui_plot" }
 whoami = "*"
 md-5 = "*"
 rfd = "*"

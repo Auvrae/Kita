@@ -19,7 +19,7 @@ pub fn modifications(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Conte
             ui.horizontal(|ui| {
                 ui.strong("Modifiers").on_hover_text("Order -> Priority");
                 
-                ui.add_space(25.0);
+                ui.add_space(30.0);
                 
 
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
