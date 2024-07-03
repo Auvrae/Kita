@@ -102,29 +102,6 @@ impl Default for ModAdd {
     }
 }
 
-// Append Folder
-#[derive(Clone, Debug)]
-pub struct ModAppFolder {
-    pub widgets_enabled: bool,
-    pub mode_name: String,
-    pub mode_field: String,
-    pub seperator: char,
-    pub seperator_enabled: bool,
-    pub levels: u8
-}
-impl Default for ModAppFolder {
-    fn default() -> Self {
-        Self {
-            widgets_enabled: false,
-            mode_name: String::from("None"),
-            mode_field: String::new(),
-            seperator: ' ',
-            seperator_enabled: false,
-            levels: 1,
-        }
-    }
-}
-
 // Case
 #[derive(Clone, Debug)]
 pub struct ModCase{
