@@ -80,20 +80,67 @@ Kita Rename Utility is a highly customizable renaming utlity written in rust. Th
 
 
 
+## Building
+
+To Build this project on run
+
+**Linux**
+```bash
+  git clone https://github.com/Auvrae/Kita
+  cd Kita
+  mkdir dependencies
+  cd dependencies
+  git clone https://github.com/Auvrae/rust-utils
+  git clone https://github.com/emilk/egui
+  cd ..
+  cargo build -r
+  mv ./target/release/kita ./Kita
+  rm -r ./target && rm -r dependencies
+```
+
+**Windows**
+```bat
+   TBD
+```
+
+Or run the `build.sh` or `build.bat` 
+
+!! **Always read scripts you download from the internet before running them** !!
+
+If you don't feel like building yourself you can download the latest version [here](https://github.com/Auvrae/Kita/releases).
 ## Upcoming Features
 
+- build.sh and build.bat
 - CLI Agruments
 - Docs
 - Linux / Windows Context menu item
 - TUI ? (maybe..)
+- Automatic updates ? (maybe..)
 
 
 
+## Known Issues
+
+**Files in the root of a drive on Windows don't get listed**
+-  This program was developed solely for Linux at first. Therefore it hadn't occured to me that a user would want to rename files at the root of an drive. On Linux everything is mounted in at least one folder.. This may or may not *ever* get fixed, unless there's user demand for it.
+
+**Undo / Redo buttons aren't functional**
+
+**Open Recent dropdown isn't functional**
+
+**User Configuration files aren't created**
+- All changes in the settings won't be saved.
+- Presets won't be saved.
 ## Lessons Learned
 
 Being a high level language programmer, my first language was JS (NodeJS -> TypeScript), Rust has taught me a lot about how computers actually do the work under the hood. It's been very fun. On my journy to learn Rust, I wanted to create a meaningful real-world application. This is my first "Full Stack" application, using as many elements from Rust as I could. For anyone interested in learning Rust I suggest giving it a shot! It's been a blast. 
 
 
+## FAQ
+
+#### Why egui and not xyz?
+
+I wanted to use something new to give the UI a fresh look instead of going with conventional frameworks like GKT or QT.
 ## Contributing
 
 Contributions are always welcome!
