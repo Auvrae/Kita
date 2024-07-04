@@ -152,8 +152,8 @@ Please adhere to this project's `code of conduct`.
 
 ## Special Thanks
 
-CheatFreak - UX Design help / Beta testing
+[CheatFreak](https://github.com/cheatfreak47/) - UX Design help / Beta testing
 
-Winter - Beta testing
+[Winter](https://github.com/winterkid09/) - Beta testing
 
 [Readme Editor](https://readme.so/editor) - Creating this document easily
