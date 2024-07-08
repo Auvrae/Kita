@@ -62,28 +62,6 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
             ui.separator();
             if ui.add_sized(
                 egui::vec2(gui.options.bar_size, ui.available_height() + 5.0), 
-                egui::widgets::SelectableLabel::new(gui.options.saving_selected, "Saving")
-            ).clicked() {
-                gui.options.sub_section_selected = OptionsList::Saving;
-                if someone_selected(gui) {
-                    deselect_all(gui);
-                };
-                gui.options.saving_selected = true;
-            }
-            ui.separator();
-            if ui.add_sized(
-                egui::vec2(gui.options.bar_size, ui.available_height() + 5.0),
-                 egui::widgets::SelectableLabel::new(gui.options.preview_selected, "Preview")
-            ).clicked() {
-                gui.options.sub_section_selected = OptionsList::Preview;
-                if someone_selected(gui) {
-                    deselect_all(gui);
-                };
-                gui.options.preview_selected = true;
-            }
-            ui.separator();
-            if ui.add_sized(
-                egui::vec2(gui.options.bar_size, ui.available_height() + 5.0), 
                 egui::widgets::SelectableLabel::new(gui.options.preset_selected, "Presets")
             ).clicked() {
                 gui.options.sub_section_selected = OptionsList::Presets;
@@ -157,9 +135,6 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                     OptionsList::Saving => {
     
                     },
-                    OptionsList::Preview => {
-    
-                    },
                     OptionsList::Presets => {
     
                     }
@@ -177,7 +152,6 @@ fn someone_selected(gui: &mut WindowMain) -> bool {
     if gui.options.file_selection_selected { is_selected = true };
     if gui.options.file_modifiers_selected { is_selected = true };
     if gui.options.saving_selected { is_selected = true };
-    if gui.options.preview_selected { is_selected = true };
     if gui.options.preset_selected { is_selected = true };
     return is_selected;
 }
@@ -189,6 +163,5 @@ fn deselect_all(gui: &mut WindowMain) {
     gui.options.file_selection_selected = false;
     gui.options.file_modifiers_selected = false;
     gui.options.saving_selected = false;
-    gui.options.preview_selected = false;
     gui.options.preset_selected = false;
 }

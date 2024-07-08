@@ -455,10 +455,6 @@ pub struct Options {
     pub file_modifiers_selected: bool,
     pub saving: OptionsSaving,
     pub saving_selected: bool,
-    pub preview: OptionsPreview,
-    pub preview_selected: bool,
-    pub error: OptionsError,
-    pub error_selected: bool,
     pub preset: OptionsPresets,
     pub preset_selected: bool
 }
@@ -501,14 +497,6 @@ impl Default for Options {
                 ..Default::default()
             },
             saving_selected: false,
-            preview: OptionsPreview {
-                ..Default::default()
-            },
-            preview_selected: false,
-            error: OptionsError {
-                ..Default::default()
-            },
-            error_selected: false,
             preset: OptionsPresets {
                 ..Default::default()
             },
@@ -552,16 +540,6 @@ pub struct OptionsSaving {
 }
 
 #[derive(Default, Clone)]
-pub struct OptionsPreview {
-
-}
-
-#[derive(Default, Clone)]
-pub struct OptionsError {
-
-}
-
-#[derive(Default, Clone)]
 pub struct OptionsPresets {
 
 }
@@ -579,7 +557,6 @@ pub enum OptionsList {
     FileSelector,
     FileModifiers,
     Saving,
-    Preview,
     Presets
 }
 

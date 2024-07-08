@@ -4,9 +4,10 @@
 
 Finish the about section
 
-gui {
+!! gui {
     drag and drop ordering for sections
 }
+
 windows context menu
 
 check new files before to eachother AND the files in the directory saving to ensure no duplicated names!!!!!
