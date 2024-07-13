@@ -46,7 +46,6 @@ pub struct WindowMain {
 
     pub modifiers_reorder_enabled: bool,
     pub modifiers_dnd_enabled: bool,
-    pub modifier_order: Vec<ModsOrder>,
     pub modifications_total: u32,
     pub modifiers: Modifiers,
 
@@ -122,19 +121,6 @@ impl Default for WindowMain {
 
             modifiers_reorder_enabled: false,
             modifiers_dnd_enabled: true,
-            modifier_order: vec![
-                ModsOrder::Case,
-                ModsOrder::Name,
-                ModsOrder::Regex,
-                ModsOrder::Remove,
-                ModsOrder::MoveCopy,
-                ModsOrder::Replace,
-                ModsOrder::Add,
-                ModsOrder::Date,
-                ModsOrder::Number,
-                ModsOrder::Ext,
-                ModsOrder::Hash
-            ],
             modifications_total: 0,
             modifiers: Modifiers::default(),
 
@@ -372,8 +358,8 @@ impl WindowMain {
         let mut completed_edits: Vec<(Vec<(String, usize, Option<String>)>, Vec<(String, usize, Option<String>)>)> = vec![];
         let mut completed_errors: Vec<(Vec<ModifierThreadError>, Vec<ModifierThreadError>)> = vec![];
         for (index, (folders, files)) in proto_files.iter().enumerate() {
-            let folders_edits = process(index, &mut self.modifiers, folders.to_owned(), self.modifier_order.clone(), true);
-            let files_edits = process(index, &mut self.modifiers, files.to_owned(), self.modifier_order.clone(), false);
+            let folders_edits = process(index, &mut self.modifiers, folders.to_owned(), self.options.modifier_order.clone(), true);
+            let files_edits = process(index, &mut self.modifiers, files.to_owned(), self.options.modifier_order.clone(), false);
             completed_edits.push((folders_edits.0, files_edits.0));
             completed_errors.push((folders_edits.1, files_edits.1));
         };
@@ -443,6 +429,8 @@ pub struct Options {
     pub gui_scale_dragging: bool,
     pub context_options: Option<egui::Options>,
     
+    pub modifier_order: Vec<ModsOrder>,
+
     pub general: OptionsGeneral,
     pub general_selected: bool,
     pub appearance: OptionsAppearance,
@@ -468,6 +456,20 @@ impl Default for Options {
             gui_scale_dragging: false,
             context_options: None,
 
+            modifier_order: vec![
+                ModsOrder::Case,
+                ModsOrder::Name,
+                ModsOrder::Regex,
+                ModsOrder::Remove,
+                ModsOrder::MoveCopy,
+                ModsOrder::Replace,
+                ModsOrder::Add,
+                ModsOrder::Date,
+                ModsOrder::Number,
+                ModsOrder::Ext,
+                ModsOrder::Hash
+            ],
+
             general: OptionsGeneral {
                 theme: Theme::Dark,
                 theme_name: String::from("Dark")
@@ -478,18 +480,18 @@ impl Default for Options {
             },
             appearance_selected: false,
             file_browser: OptionsFileBrowser {
-                multi_select: true,
+                multi_select: false,
                 ..Default::default()
             },
             file_browser_selected: false,
             file_selection: OptionsFileSelection {
                 stripped_column: true,
-                list_folders: true,
+                list_folders: false,
                 ..Default::default()
             },
             file_selection_selected: false,
             file_modifiers: OptionsFileModifiers {
-                sub_modifier_maximum: 5,
+                sub_modifier_maximum: 3,
                 ..Default::default()
             },
             file_modifiers_selected: false,

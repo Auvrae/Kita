@@ -1,5 +1,6 @@
 use egui::Context;
 use super::super::super::app::WindowMain;
+use super::super::super::util::config;
 
 pub fn bar(gui: &mut WindowMain, ctx: &Context) {
     egui::TopBottomPanel::bottom("Bottom")
@@ -8,6 +9,10 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
         ui.vertical(|ui| {ui.add_space(2.0)});
         ui.horizontal(|ui| {
             ui.label(format!("v{}", env!("CARGO_PKG_VERSION").to_string()));
+
+            if ui.button("Save Settings").clicked() {
+                config::write_config(gui.options.clone()).unwrap();
+            }
 
             ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
                 let year = gui.local_time.format("%Y");

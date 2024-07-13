@@ -44,8 +44,8 @@ pub fn modifications(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Conte
                 .show(ui, |ui| {
                     let mut from: Option<Arc<DndDropLocation>> = None;
                     let mut to: Option<DndDropLocation> = None;
-                    for mod_index in 0..gui.modifier_order.len() {
-                        let modifier = gui.modifier_order[mod_index];
+                    for mod_index in 0..gui.options.modifier_order.len() {
+                        let modifier = gui.options.modifier_order[mod_index];
                         if gui.modifiers_reorder_enabled && modifier != ModsOrder::Hash {
                             let loc = DndDropLocation {
                                 row: mod_index
@@ -82,10 +82,10 @@ pub fn modifications(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Conte
                         };
                     };
                     if let (Some(from), Some(to)) = (from, to) {
-                        let mut order = gui.modifier_order.clone();
+                        let mut order = gui.options.modifier_order.clone();
                         let modifier = order.remove(from.row);
                         order.insert(to.row, modifier);
-                        gui.modifier_order = order;
+                        gui.options.modifier_order = order;
                     };
                 });
     

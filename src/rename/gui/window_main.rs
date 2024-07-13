@@ -43,7 +43,13 @@ impl eframe::App for WindowMain {
                 self.file_browser.allow_frame = true;
                 self.file_selector.allow_frame = true;
                 self.modifiers.allow_frame = true;
-                self.options.gui_scale = ctx.pixels_per_point(); // Store OS scale.
+                self.options.gui_scale = {
+                    if self.options.gui_scale == 0.0 {
+                        ctx.pixels_per_point()
+                    } else {
+                        self.options.gui_scale
+                    }
+                }; // Store OS scale.
                 self.no_refresh = false;
                 self.first_frame = false;
             };
@@ -297,7 +303,7 @@ impl eframe::App for WindowMain {
     
             let mod_order = Arc::clone(&self.modifier_thread_storage.modifier_order);
             if mod_order.lock().unwrap().is_none() {
-                mod_order.lock().unwrap().replace(self.modifier_order.clone());
+                mod_order.lock().unwrap().replace(self.options.modifier_order.clone());
             };
     
             let files = Arc::clone(&self.modifier_thread_storage.raw_files);

@@ -1,19 +1,6 @@
-!! Multithreading -> Make "the threaderizer", a generic thread function that turns actions into threads.
-    Deal with errors somehow.. (I haven't had any yet hehe)
-
-
 Finish the about section
 
-!! gui {
-    drag and drop ordering for sections
-}
-
 windows context menu
-
-check new files before to eachother AND the files in the directory saving to ensure no duplicated names!!!!!
-
-!! Make all selections and options in an Arc<Mutex>> and move to another thread for processing the strings
-Make more static memory mappings USE MORE STR and ARR
 
 User configs (in json)
 
@@ -22,29 +9,13 @@ Auto naming presets "Replace Xxx with XXX" for the name.
 
 Gui-less preset usage on target dir
 
-!! Disable panel scrolling while hovering over input field
-
-Options {
-    file_selector: {
-        Always show preview fields
-    }
-}
-
 Root files shown in the picker (windows) when nothing is selected
-
-!! Make Save button always shown on top of modifiers
-
-!! Addable modules for each "mod" I.E Stacking, one ontop of the other.
-
-!! Better Error handling {
-    Add an error field to mods, so that the thread can flag an error, and description of an error
-    or create new struct will all mods and their error, add fields to all mods for an error.
-}
-
-Add cheatfreak to about me page as bug testing / ux design help
 
 Harcode list of folders that will not ever be accessable and don't show them ever.
 
-!! Modifier insert-at allow negative number to loop from the rear. (All modifiers)
+Fix Save Modifier piece to stick to the bottom of the window regardless of space above it.
 
-(scrapped) file_select -> update_files, modify to allow keeping of selected files if a folder gets removed / added
+Open kita to target directory {
+    Create function to move to path recursively and open necessary file_browser tabs.
+    Create function to crawl paths. and above ^^
+}
