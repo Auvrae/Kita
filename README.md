@@ -23,7 +23,7 @@ Kita Rename Utility is a highly customizable renaming utlity written in rust. Th
 
 ## Features
 
-- Cross platform (Linux [x64, aarch64], Windows [x64])
+- ✓ Cross platform (Linux [x64, aarch64], Windows [x64])
 - Highly Customizable:
   - ✓ Reordering Modifiers [Also changes their priorty] 
   - ✓ Dark mode / Light mode
@@ -37,7 +37,7 @@ Kita Rename Utility is a highly customizable renaming utlity written in rust. Th
 - CLI:
   - Open target directory directly with launch options (X11 / Wayland compatible via [xdg-desktop-portals](https://github.com/flatpak/xdg-desktop-portal))
   - Apply Presets to target directory with preview and confirmation (optional)
-- Multi-Threading
+- ✓ Multi-Threading
 - Modifiers:
   - ✓ Add:
     - Prefix / Suffix / Insert at [String]
@@ -130,7 +130,6 @@ If you don't feel like building yourself you can download the latest version [he
 **Open Recent dropdown isn't functional**
 
 **User Configuration files aren't created**
-- All changes in the settings won't be saved.
 - Presets won't be saved.
 ## Lessons Learned
 

@@ -10,6 +10,8 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
         ui.horizontal(|ui| {
             ui.label(format!("v{}", env!("CARGO_PKG_VERSION").to_string()));
 
+            ui.separator();
+            
             if ui.button("Save Settings").clicked() {
                 config::write_config(gui.options.clone()).unwrap();
             }
