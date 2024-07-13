@@ -29,6 +29,7 @@ Kita Rename Utility is a highly customizable renaming utlity written in rust. Th
   - ✓ Dark mode / Light mode
   - ✓ Scaling for high DPI monitors
   - Low power mode [Reduces framerate and thread count for better efficiency]
+- ✓ Config File (JSON) (~/.config/kita (Linux) | %appdata%/local/kita (Windows))
 - Presets:
   - Save / Load (In Modifiers panel, or in the Preset Manager)
   - Preset Manager:
