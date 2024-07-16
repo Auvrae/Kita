@@ -1,5 +1,5 @@
 #![windows_subsystem = "windows"]
-#![allow(dead_code, unused_variables, unused_imports)]
+//#![allow(dead_code, unused_variables, unused_imports)]
 
 mod rename;
 
@@ -45,9 +45,9 @@ fn main() -> Result<(), eframe::Error> {
     let main = WindowMain {
         cli_args: args,
         options: config::read_config(),
+        presets: config::read_presets(),
         ..Default::default()
     };
-
     eframe::run_native(
         "Kita",
         options,

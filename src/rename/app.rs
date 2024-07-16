@@ -1,4 +1,5 @@
 use super::mods::{Modifiers, ModsOrder};
+use super::presets::Presets;
 use super::util::{dir, threads::{ThreadState, ModifierThreadError, ModifierThreadStorage, ThreadFunction, ThreadStorage, Endianness, thread}};
 use super::util::processing::file_processing::process;
 use super::gui::main_sub::file_browser::{FileBrowser, BrowserItem};
@@ -7,6 +8,7 @@ use super::debug::DebugStats;
 
 use utils;
 use std::sync;
+use serde::{Deserialize, Serialize};
 
 // Main Window
 pub struct WindowMain {
@@ -19,6 +21,7 @@ pub struct WindowMain {
     pub fonts: Vec<String>,
     pub input_state: Option<egui::InputState>,
     pub options: Options,
+    pub presets: Presets,
     pub local_time: chrono::DateTime<chrono::Local>,
     pub reset_processing: bool,
     pub reset_ui: bool,
@@ -67,6 +70,7 @@ impl Default for WindowMain {
             fonts: vec![],
             input_state: None,
             options: Options::default(),
+            presets: Presets::default(),
             local_time: chrono::Local::now(),
             reset_processing: false,
             reset_ui: false,
@@ -99,6 +103,10 @@ impl Default for WindowMain {
                 preset_manager_id: egui::Id::from(utils::create_random_string(8)),
                 quit: false,
                 quit_id: egui::Id::from(utils::create_random_string(8)),
+                save_as_preset: false,
+                save_as_preset_id: egui::Id::from(utils::create_random_string(8)),
+                save_as_preset_field: String::new(),
+                save_as_preset_field_name: String::new(),
                 debug: false,
                 debug_id: egui::Id::from(utils::create_random_string(8)),
                 debug_plot_id: egui::Id::from(utils::create_random_string(8))
@@ -159,6 +167,7 @@ impl WindowMain {
         if pops.save_confirmation { open = true };
         if pops.hashing { open = true };
         if pops.quit { open = true };
+        if pops.save_as_preset { open = true };
 
         open
     }
@@ -416,18 +425,21 @@ pub struct GuiPopUps{
     pub preset_manager_id: egui::Id,
     pub quit: bool,
     pub quit_id: egui::Id,
+    pub save_as_preset: bool,
+    pub save_as_preset_id: egui::Id,
+    pub save_as_preset_field: String,
+    pub save_as_preset_field_name: String,
     pub debug: bool,
     pub debug_id: egui::Id,
     pub debug_plot_id: egui::Id
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Options {
     pub sub_section_selected: OptionsList,
     pub bar_size: f32,
     pub gui_scale: f32,
     pub gui_scale_dragging: bool,
-    pub context_options: Option<egui::Options>,
     
     pub modifier_order: Vec<ModsOrder>,
 
@@ -454,7 +466,6 @@ impl Default for Options {
             bar_size: 125.0,
             gui_scale: 0.0,
             gui_scale_dragging: false,
-            context_options: None,
 
             modifier_order: vec![
                 ModsOrder::Case,
@@ -507,51 +518,51 @@ impl Default for Options {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct OptionsGeneral {
     pub theme: Theme,
     pub theme_name: String
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsAppearance {
 
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsFileBrowser {
     pub multi_select: bool
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsFileSelection {
     pub stripped_column: bool,
     pub list_folders: bool,
     pub always_show_extra_row: bool
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsFileModifiers {
     pub sub_modifier_maximum: u8,
     pub modifiers_enabled: Vec<ModsOrder>
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsSaving {
 
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsPresets {
 
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsExperimental {
 
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum OptionsList {
     General,
     Appearance,
@@ -562,7 +573,7 @@ pub enum OptionsList {
     Presets
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum Theme {
     Dark,
     Light

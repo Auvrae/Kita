@@ -1,6 +1,6 @@
 [package]
 name = "kita"
-version = "0.18.193"
+version = "0.19.40"
 edition = "2021"
 
 [profile.release]
@@ -30,6 +30,8 @@ regex = "*"
 numerals = "*"
 alpha-counter = "*"
 json = "*"
+serde = "*"
+serde_json = "*"
 
 [target.'cfg(linux)'.dependencies]
 users = "*"

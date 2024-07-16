@@ -84,6 +84,10 @@ pub fn browser(gui: &mut WindowMain, ui: &mut egui::Ui, ctx: &egui::Context) {
     gui.statistics.push(start.elapsed().as_micros() as u32, DebugStatType::GuiBrowser);
 }
 
+pub fn browse_to(gui: &mut WindowMain, path: String) {
+    
+}
+
 fn fill_tree(gui: &mut WindowMain, item: &mut BrowserItem, ui: &mut egui::Ui, ctx: &egui::Context) {
     let mut header = egui::collapsing_header::CollapsingState::load_with_default_open(ctx, item.id, false);
     header.set_open(item.entered);

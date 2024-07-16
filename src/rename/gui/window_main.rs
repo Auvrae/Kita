@@ -139,6 +139,21 @@ impl eframe::App for WindowMain {
                 });
             }
 
+
+            // Save As Preset
+            if self.popups.save_as_preset {
+                egui::Window::new("Preset Confirmation")
+                .id(self.popups.preset_manager_id)
+                .default_pos(egui::pos2(self.window_size.x * 0.35, self.window_size.y * 0.35))
+                .collapsible(false)
+                .resizable(false)
+                .movable(true)
+                .title_bar(true)
+                .show(ctx, |ui| {
+                    popups::save_as_preset::window(self, ui, ctx);
+                });
+            }
+
             // Debug
             if self.popups.debug {
                 egui::Window::new("DEBUG")
@@ -205,13 +220,6 @@ impl eframe::App for WindowMain {
                 Theme::Light => {
                     ctx.set_visuals(egui::Visuals::light());
                 }
-            };
-
-            // Set Options if there is Some()
-            if self.options.context_options.is_some() {
-                ctx.options_mut(| options| {
-                    *options = self.options.context_options.take().unwrap();
-                });
             };
         }
 

@@ -126,11 +126,13 @@ fn fill_table(
         });
         return vec![selected_folders, selected_files];
     };
+    
     body.row(16.0, |mut ui| {
         ui.col(|ui| {
             ui.strong(folder.path.to_owned());
         });
     });
+
     if gui.options.file_selection.list_folders == true {
         for (index, item) in folder.list_folders.iter().enumerate() {
             let mut selected = false;
@@ -194,7 +196,8 @@ fn fill_table(
                 });
             };
         };
-    }
+    };
+
     for (index, file) in folder.list_files.iter().enumerate() {
         body.row(16.0, |mut ui| {
             ui.col(|ui| {
@@ -251,7 +254,7 @@ fn fill_table(
                 });
             });
         };
-    }
+    };
 
     return vec![selected_folders, selected_files];
 }

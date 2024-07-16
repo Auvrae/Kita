@@ -1,4 +1,5 @@
 use std::thread::{park_timeout, sleep, spawn, JoinHandle};
+use serde::{Deserialize, Serialize};
 use std::time::{Duration, Instant};
 use std::sync::{Arc, Mutex};
 use std::{fs, io, vec};
@@ -275,7 +276,7 @@ impl Default for ThreadStorage {
     }
 }
 
-#[derive(PartialEq, Clone, Debug, Copy)]
+#[derive(PartialEq, Clone, Debug, Copy, Serialize, Deserialize)]
 pub enum HashMode {
     None,
     Prefix,
@@ -283,7 +284,7 @@ pub enum HashMode {
     File
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub enum HashType {
     CRC32,
     MD5,
@@ -308,7 +309,7 @@ pub enum ThreadFunction {
     StringProcessing(u8)
 }
 
-#[derive(Clone, Debug, Copy)]
+#[derive(Clone, Debug, Copy, Serialize, Deserialize)]
 pub enum Endianness {
     BigEndian,
     _LittleEndian

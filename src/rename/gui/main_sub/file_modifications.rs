@@ -9,6 +9,7 @@ use super::super::super::mods::{Modifiers, ModsOrder, ModAdd, ModCase, ModExtens
     ModHashing, ModMoveCopy, ModName, ModNumber, ModRegex, ModRemove, ModReplace, CaseMode, CaseExecptMode,
     DateFormatMode, DateMode, DateSeperator, ExtensionMode, HashSeperator, MoveCopyFromMode, MoveCopyToMode, NameMode, NumberMode, 
     NumberTypeMode, RemoveCropMode};
+use super::super::super::super::config;
 
 pub fn modifications(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
     let start = Instant::now();
@@ -21,6 +22,44 @@ pub fn modifications(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Conte
                 
                 ui.add_space(30.0);
                 
+                if gui.presets.sets.len() >= 1 {
+                    let mut label = gui.popups.save_as_preset_field_name.clone();
+                    if label.len() >= 8 {
+                        let (a, b) = gui.popups.save_as_preset_field_name.split_at(8);
+                        label = format!("{}{}", a.to_string(), "...");
+                    }
+                    egui::ComboBox::new(format!("presets"), "")
+                    .selected_text(label.to_owned())
+                    .show_ui(ui, |ui| {
+                        for (index, preset) in gui.presets.sets.iter().enumerate() {
+                            let mut label = preset.name.clone();
+                            if label.len() >= 24 {
+                                let (a, b) = preset.name.split_at(24);
+                                label = format!("{}{}", a.to_string(), "...");
+                            }
+                            let selectable = ui.selectable_label(false, label.to_owned());
+                            if selectable.clicked() {
+                                gui.modifiers = preset.modifiers.to_owned();
+                                gui.options.modifier_order = preset.modifier_order.to_owned();
+                                gui.popups.save_as_preset_field_name = preset.name.to_owned();
+                            }
+                            selectable.on_hover_text(&preset.name);
+                        }
+                    });
+                    if ui.button("save").clicked() {
+                        let mut found: bool = false;
+                        for (index, preset) in gui.presets.sets.iter_mut().enumerate() {
+                            if preset.name == gui.popups.save_as_preset_field_name {
+                                found = true;
+                                preset.modifiers = gui.modifiers.to_owned();
+                                preset.modifier_order = gui.options.modifier_order.to_owned();
+                            };
+                        };
+                        if found == true {
+                            config::write_presets(gui.presets.clone()).unwrap();
+                        };
+                    };
+                };
 
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
                     let reset = ui.add_enabled(true, egui::Button::new("⟲".to_string()));

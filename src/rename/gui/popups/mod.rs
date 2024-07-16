@@ -6,3 +6,4 @@ pub mod save_confirmation;
 pub mod hashing;
 pub mod quit;
 pub mod debug;
+pub mod save_as_preset;

@@ -47,6 +47,7 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
             });
             ui.menu_button("Preset", |ui| {
                 if ui.button("Save as preset").clicked() {
+                    gui.popups.save_as_preset = !gui.popups.save_as_preset;
                     ui.close_menu();
 
                 };
@@ -54,7 +55,7 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
                 ui.separator();
 
                 if ui.button("Preset Manager").clicked() && gui.is_popup_open() == false {
-                    gui.popups.preset_manager = !gui.popups.preset_manager;
+                    //gui.popups.preset_manager = !gui.popups.preset_manager;
                     ui.close_menu();
                 }
             });

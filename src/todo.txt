@@ -19,3 +19,7 @@ Open kita to target directory {
     Create function to move to path recursively and open necessary file_browser tabs.
     Create function to crawl paths. and above ^^
 }
+
+Undo / Redo buttons
+
+Open recent..
