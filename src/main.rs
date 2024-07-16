@@ -1,5 +1,5 @@
 #![windows_subsystem = "windows"]
-//#![allow(dead_code, unused_variables, unused_imports)]
+#![allow(dead_code, unused_variables, unused_imports)]
 
 mod rename;
 

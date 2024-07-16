@@ -129,8 +129,6 @@ If you don't feel like building yourself you can download the latest version [he
 
 **Open Recent dropdown isn't functional**
 
-**User Configuration files aren't created**
-- Presets won't be saved.
 ## Lessons Learned
 
 Being a high level language programmer, my first language was JS (NodeJS -> TypeScript), Rust has taught me a lot about how computers actually do the work under the hood. It's been very fun. On my journy to learn Rust, I wanted to create a meaningful real-world application. This is my first "Full Stack" application, using as many elements from Rust as I could. For anyone interested in learning Rust I suggest giving it a shot! It's been a blast. 
