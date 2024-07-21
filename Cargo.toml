@@ -1,6 +1,6 @@
 [package]
 name = "kita"
-version = "0.19.41"
+version = "0.20.3"
 edition = "2021"
 
 [profile.release]

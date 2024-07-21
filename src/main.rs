@@ -28,6 +28,11 @@ fn main() -> Result<(), eframe::Error> {
     let mut args: Vec<String> = std::env::args().collect();
     args.remove(0); // Remove the path argument. 
 
+    // Do CLI stuff
+    {
+        
+    }
+
     let options = eframe::NativeOptions {
         renderer: eframe::Renderer::Glow,
         viewport: egui::ViewportBuilder {
@@ -42,10 +47,37 @@ fn main() -> Result<(), eframe::Error> {
         },
         ..Default::default()
     };
+    let mut pre_options = config::read_config();
+
+    // Prevert modifier_order from having extra elements.
+    if pre_options.modifier_order.0.len() != 11 {
+        pre_options.modifier_order = rename::app::ModifierOrder::default();
+    }
+
+    // Prevent modifier_order from having multiple of the same varient.
+    {
+        let mut found: Vec<u8> = vec![];
+        for (index, varient) in rename::mods::ModsOrder::iterate_over_oneness().enumerate() {
+            found.push(0);
+            for (_, v) in pre_options.modifier_order.0.iter().enumerate() {
+                if *v == varient {
+                    found[index] += 1;
+                };
+            };
+        };
+        for count in found { 
+            if count > 1 || count == 0 {
+                pre_options.modifier_order = rename::app::ModifierOrder::default();
+                break;
+            };
+        };
+    }
+
+    let pre_presets = config::read_presets();
     let main = WindowMain {
         cli_args: args,
-        options: config::read_config(),
-        presets: config::read_presets(),
+        options: pre_options,
+        presets: pre_presets,
         ..Default::default()
     };
     eframe::run_native(

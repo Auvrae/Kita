@@ -47,6 +47,14 @@ pub enum ModsOrder {
     Remove,
     Replace
 }
+
+impl ModsOrder {
+    pub fn iterate_over_oneness() -> impl Iterator<Item = ModsOrder> {
+        [ModsOrder::Add, ModsOrder::Case, ModsOrder::Date, ModsOrder::Ext, 
+            ModsOrder::Hash, ModsOrder::MoveCopy, ModsOrder::Name, ModsOrder::Number, 
+            ModsOrder::Regex, ModsOrder::Remove, ModsOrder::Replace].iter().copied()
+    }
+}
 impl Default for Modifiers {
     fn default() -> Self {
         Self {

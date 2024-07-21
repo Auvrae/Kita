@@ -351,9 +351,9 @@ fn case(mut file: String, ext: String, modcase: ModCase) -> (String, String) {
             let words_raw: Vec<&str> = file.split(' ').collect();
             let mut words: Vec<String> = vec![];
             let mut file_new: String = String::new();
-            if words.len() != 0 {
+            if words_raw.len() != 0 {
                 for word_index in 0..words_raw.len() {
-                    let mut word = words_raw[word_index].to_string();
+                    let mut word = words_raw[word_index].to_string().to_ascii_lowercase();
                     if word.chars().count() != 0 {
                         let start = word.remove(0);
                         word.insert(0, start.to_ascii_uppercase());
@@ -1174,4 +1174,50 @@ fn replace(mut file: String, ext: String, modreplace: ModReplace) -> (String, St
         file = file.replacen(&modreplace.replace_match, &modreplace.replace_with, 255);
     }
     (file, ext)
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_add() {
+        let (prefix, _) = super::add(String::from("Hello world"), 
+            String::from(".ext"), 
+            super::ModAdd { 
+                prefix: String::from("Test - "), 
+                insert: String::from(""), 
+                insert_at: 0, 
+                suffix: String::from(""), 
+                seperator: ' ', 
+                seperator_enabled: false 
+            });
+        let (suffix, _) = super::add(String::from("Hello world"), 
+            String::from(".ext"), 
+            super::ModAdd { 
+                prefix: String::from(""), 
+                insert: String::from(""), 
+                insert_at: 0, 
+                suffix: String::from(" - Test"), 
+                seperator: ' ', 
+                seperator_enabled: false 
+            });
+        let (insert, _) = super::add(String::from("Hello world"), 
+            String::from(".ext"), 
+            super::ModAdd { 
+                prefix: String::from(""), 
+                insert: String::from("Test"), 
+                insert_at: 5, 
+                suffix: String::from(""), 
+                seperator: ' ', 
+                seperator_enabled: false 
+            });
+        assert_eq!(prefix, String::from("Test - Hello world"));
+        assert_eq!(suffix, String::from("Hello world - Test"));
+        assert_eq!(insert, String::from("HelloTest world"));
+    }
+
+    fn test_date() {
+        
+    }
+
+
 }

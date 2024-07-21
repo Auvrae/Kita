@@ -4,7 +4,7 @@ use std::sync::{Arc, Mutex};
 
 use super::popups;
 use super::main_sub::{bar_bottom, bar_top, file_browser, file_selector, file_modifications};
-use super::super::util::threads::{ThreadFunction, ThreadState, thread, ModifierThreadStorage};
+use super::super::util::threads::{ThreadFunction, ThreadState, thread, ModifierThreadStorage, ThreadStorage};
 use super::super::app::{WindowMain, Theme};
 use super::super::debug::DebugStatType;
 
@@ -39,6 +39,7 @@ impl eframe::App for WindowMain {
                         }
                     };
                 };
+                self.thread_storage = ThreadStorage::default();
                 thread(self, ThreadFunction::StringProcessing(16)); // Initialize String Processing Thread
                 self.file_browser.allow_frame = true;
                 self.file_selector.allow_frame = true;
@@ -248,7 +249,7 @@ impl eframe::App for WindowMain {
                 };
                 self.first_frame = true;
                 self.no_refresh = true;
-                return;
+                //return;
             };
 
             // Center
@@ -311,7 +312,7 @@ impl eframe::App for WindowMain {
     
             let mod_order = Arc::clone(&self.modifier_thread_storage.modifier_order);
             if mod_order.lock().unwrap().is_none() {
-                mod_order.lock().unwrap().replace(self.options.modifier_order.clone());
+                mod_order.lock().unwrap().replace(self.options.modifier_order.0.clone());
             };
     
             let files = Arc::clone(&self.modifier_thread_storage.raw_files);

@@ -50,7 +50,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                                         String::from(gui.local_time.clone().timestamp_millis().to_string())
                                     }
                                 },
-                                modifier_order: gui.options.modifier_order.clone(),
+                                modifier_order: gui.options.modifier_order.0.clone(),
                                 modifiers: gui.modifiers.clone()
                             });
                             config::write_presets(gui.presets.to_owned()).unwrap(); 

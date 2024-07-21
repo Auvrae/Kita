@@ -115,6 +115,7 @@ If you don't feel like building yourself you can download the latest version [he
 - CLI Agruments
 - Docs
 - Linux / Windows Context menu item
+- Open Recent folders
 - TUI ? (maybe..)
 - Automatic updates ? (maybe..)
 
@@ -124,8 +125,6 @@ If you don't feel like building yourself you can download the latest version [he
 
 **Files in the root of a drive on Windows don't get listed**
 -  This program was developed solely for Linux at first. Therefore it hadn't occured to me that a user would want to rename files at the root of an drive. On Linux everything is mounted in at least one folder.. This may or may not *ever* get fixed, unless there's user demand for it.
-
-**Undo / Redo buttons aren't functional**
 
 **Open Recent dropdown isn't functional**
 

@@ -147,7 +147,7 @@ pub fn write_config(options: Options) -> Result<(), String> {
 }
 
 pub fn serialize_config(config: String) -> Options {
-    let options: Options = serde_json::from_str(&config).unwrap_or_default();
+    let options: Options = serde_json::from_str(&config).unwrap();
     options
 }
 

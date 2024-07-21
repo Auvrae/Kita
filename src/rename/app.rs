@@ -1,9 +1,10 @@
 use super::mods::{Modifiers, ModsOrder};
 use super::presets::Presets;
-use super::util::{dir, threads::{ThreadState, ModifierThreadError, ModifierThreadStorage, ThreadFunction, ThreadStorage, Endianness, thread}};
+use super::util::{dir, threads::{ThreadState, ModifierThreadError, ModifierThreadStorage, ThreadFunction, ThreadStorage, Endianness, thread, SaveType}};
 use super::util::processing::file_processing::process;
 use super::gui::main_sub::file_browser::{FileBrowser, BrowserItem};
 use super::gui::main_sub::file_selector::FileSelection;
+use super::app;
 use super::debug::DebugStats;
 
 use utils;
@@ -27,7 +28,10 @@ pub struct WindowMain {
     pub reset_ui: bool,
     pub save_available: bool,
 
+    pub edits: Edits,
+
     pub bar_top_height: f32,
+    pub bar_top_enabled: bool,
     pub bar_bottom_height: f32,
 
     pub section_browser_percentage: f32,
@@ -76,8 +80,13 @@ impl Default for WindowMain {
             reset_ui: false,
             save_available: false,
 
+            edits: Edits{
+                redo: None,
+                undo: None
+            },
 
             bar_top_height: 28.0,
+            bar_top_enabled: true,
             bar_bottom_height: 28.0,
 
             section_browser_percentage: 0.30,
@@ -176,12 +185,14 @@ impl WindowMain {
         self.section_browser_enabled = true;
         self.section_modifiers_enabled = true;
         self.section_selector_enabled = true;
+        self.bar_top_enabled = true;
     }
 
     pub fn hide_all_elements(&mut self) {
         self.section_browser_enabled = false;
         self.section_modifiers_enabled = false;
         self.section_selector_enabled = false;
+        self.bar_top_enabled = false;
     }
     
     pub fn read_directory(&mut self, path: String, root: bool, depth: Vec<u32>) -> Vec<BrowserItem> {
@@ -359,6 +370,7 @@ impl WindowMain {
             };
 
         };
+
         *self.modifier_thread_storage.kill_sig_string_processor.lock().unwrap() = true;
         while *self.modifier_thread_storage.state.lock().unwrap() != ThreadState::Dead {}
 
@@ -367,8 +379,8 @@ impl WindowMain {
         let mut completed_edits: Vec<(Vec<(String, usize, Option<String>)>, Vec<(String, usize, Option<String>)>)> = vec![];
         let mut completed_errors: Vec<(Vec<ModifierThreadError>, Vec<ModifierThreadError>)> = vec![];
         for (index, (folders, files)) in proto_files.iter().enumerate() {
-            let folders_edits = process(index, &mut self.modifiers, folders.to_owned(), self.options.modifier_order.clone(), true);
-            let files_edits = process(index, &mut self.modifiers, files.to_owned(), self.options.modifier_order.clone(), false);
+            let folders_edits = process(index, &mut self.modifiers, folders.to_owned(), self.options.modifier_order.0.clone(), true);
+            let files_edits = process(index, &mut self.modifiers, files.to_owned(), self.options.modifier_order.0.clone(), false);
             completed_edits.push((folders_edits.0, files_edits.0));
             completed_errors.push((folders_edits.1, files_edits.1));
         };
@@ -376,32 +388,75 @@ impl WindowMain {
         self.fill_selected_renamed(completed_edits, completed_errors);
 
         for (folder_index, folder) in self.file_selector.folders.iter().enumerate() {
-            for (fold_index, _) in folder.selected_folders.iter().enumerate() {
-                edit.items.push(dir::EdittedItem {
-                    name_original: self.file_selector.folders[folder_index].list_folders[fold_index].name.to_owned(),
-                    name_edited: self.file_selector.folders[folder_index].list_folders[fold_index].name_modified.to_owned(),
-                    path_original: self.file_selector.folders[folder_index].list_folders[fold_index].path.to_owned(),
-                    path_edited: format!("{}/{}", self.file_selector.folders[folder_index].list_folders[fold_index].path_plain, 
-                        self.file_selector.folders[folder_index].list_folders[fold_index].name_modified)
-                });
+            for (fold_index, item) in folder.selected_folders.iter().enumerate() {
+                if *item == true {
+                    edit.items.push(dir::EdittedItem {
+                        name_original: self.file_selector.folders[folder_index].list_folders[fold_index].name.to_owned(),
+                        name_edited: self.file_selector.folders[folder_index].list_folders[fold_index].name_modified.to_owned(),
+                        path_original: self.file_selector.folders[folder_index].list_folders[fold_index].path.to_owned(),
+                        path_edited: format!("{}/{}", self.file_selector.folders[folder_index].list_folders[fold_index].path_plain, 
+                            self.file_selector.folders[folder_index].list_folders[fold_index].name_modified)
+                    });
+                }
             };
-            for (file_index, _) in folder.list_files.iter().enumerate() {
-                edit.items.push(dir::EdittedItem {
-                    name_original: self.file_selector.folders[folder_index].list_files[file_index].name.to_owned(),
-                    name_edited: self.file_selector.folders[folder_index].list_files[file_index].name_modified.to_owned(),
-                    path_original: self.file_selector.folders[folder_index].list_files[file_index].path.to_owned(),
-                    path_edited: format!("{}/{}", self.file_selector.folders[folder_index].list_files[file_index].path_plain, 
-                        self.file_selector.folders[folder_index].list_files[file_index].name_modified)
-                });
+            for (file_index, item) in folder.selected_files.iter().enumerate() {
+                if *item == true {
+                    edit.items.push(dir::EdittedItem {
+                        name_original: self.file_selector.folders[folder_index].list_files[file_index].name.to_owned(),
+                        name_edited: self.file_selector.folders[folder_index].list_files[file_index].name_modified.to_owned(),
+                        path_original: self.file_selector.folders[folder_index].list_files[file_index].path.to_owned(),
+                        path_edited: format!("{}/{}", self.file_selector.folders[folder_index].list_files[file_index].path_plain, 
+                            self.file_selector.folders[folder_index].list_files[file_index].name_modified)
+                    });
+                }
             };
         };
         
         self.popups.saving = true;
         *self.thread_storage.progress.lock().unwrap() = 0.00;
-        thread(self, ThreadFunction::SaveUndoRedo(edit));
+        edit.tag = format!("{} files.", edit.items.len());
+        self.edits.undo = Some(edit.clone());
+        self.edits.redo = None;
+
+        thread(self, ThreadFunction::SaveUndoRedo(edit, SaveType::Save, self.options.saving.io_operation_waittime));
+        self.file_browser.allow_frame = false;
+        self.file_selector.allow_frame = false;
+        self.modifiers.allow_frame = false;
     }
 
-    
+    pub fn undo(&mut self) {
+        let edit = self.edits.undo.take().unwrap();
+        self.popups.saving = true;
+        *self.thread_storage.progress.lock().unwrap() = 0.00;
+        self.edits.undo = None;
+        self.edits.redo = Some(edit.clone());
+
+
+        *self.modifier_thread_storage.kill_sig_string_processor.lock().unwrap() = true;
+        while *self.modifier_thread_storage.state.lock().unwrap() != ThreadState::Dead {}
+
+        thread(self, ThreadFunction::SaveUndoRedo(edit, SaveType::Undo, self.options.saving.io_operation_waittime));
+        self.file_browser.allow_frame = false;
+        self.file_selector.allow_frame = false;
+        self.modifiers.allow_frame = false;
+    }
+
+    pub fn redo(&mut self) {
+        let edit = self.edits.redo.take().unwrap();
+        self.popups.saving = true;
+        *self.thread_storage.progress.lock().unwrap() = 0.00;
+        self.edits.undo = Some(edit.clone());
+        self.edits.redo = None;
+
+
+        *self.modifier_thread_storage.kill_sig_string_processor.lock().unwrap() = true;
+        while *self.modifier_thread_storage.state.lock().unwrap() != ThreadState::Dead {}
+
+        thread(self, ThreadFunction::SaveUndoRedo(edit, SaveType::Redo, self.options.saving.io_operation_waittime));
+        self.file_browser.allow_frame = false;
+        self.file_selector.allow_frame = false;
+        self.modifiers.allow_frame = false;
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -436,26 +491,43 @@ pub struct GuiPopUps{
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Options {
+    #[serde(skip)]
     pub sub_section_selected: OptionsList,
-    pub bar_size: f32,
+    #[serde(default)]
     pub gui_scale: f32,
+    #[serde(skip)]
     pub gui_scale_dragging: bool,
     
-    pub modifier_order: Vec<ModsOrder>,
+    #[serde(default)]
+    pub modifier_order: ModifierOrder,
 
+    #[serde(default)]
     pub general: OptionsGeneral,
+    #[serde(skip)]
     pub general_selected: bool,
+    #[serde(default)]
     pub appearance: OptionsAppearance,
+    #[serde(skip)]
     pub appearance_selected: bool,
+    #[serde(default)]
     pub file_browser: OptionsFileBrowser,
+    #[serde(skip)]
     pub file_browser_selected: bool,
+    #[serde(default)]
     pub file_selection: OptionsFileSelection,
+    #[serde(skip)]
     pub file_selection_selected: bool,
+    #[serde(default)]
     pub file_modifiers: OptionsFileModifiers,
+    #[serde(skip)]
     pub file_modifiers_selected: bool,
+    #[serde(default)]
     pub saving: OptionsSaving,
+    #[serde(skip)]
     pub saving_selected: bool,
+    #[serde(default)]
     pub preset: OptionsPresets,
+    #[serde(skip)]
     pub preset_selected: bool
 }
 
@@ -463,11 +535,10 @@ impl Default for Options {
     fn default() -> Self {
         Self {
             sub_section_selected: OptionsList::General,
-            bar_size: 125.0,
             gui_scale: 0.0,
             gui_scale_dragging: false,
 
-            modifier_order: vec![
+            modifier_order: ModifierOrder {0: vec![
                 ModsOrder::Case,
                 ModsOrder::Name,
                 ModsOrder::Regex,
@@ -479,7 +550,7 @@ impl Default for Options {
                 ModsOrder::Number,
                 ModsOrder::Ext,
                 ModsOrder::Hash
-            ],
+            ]},
 
             general: OptionsGeneral {
                 theme: Theme::Dark,
@@ -491,13 +562,11 @@ impl Default for Options {
             },
             appearance_selected: false,
             file_browser: OptionsFileBrowser {
-                multi_select: false,
                 ..Default::default()
             },
             file_browser_selected: false,
             file_selection: OptionsFileSelection {
                 stripped_column: true,
-                list_folders: false,
                 ..Default::default()
             },
             file_selection_selected: false,
@@ -507,6 +576,7 @@ impl Default for Options {
             },
             file_modifiers_selected: false,
             saving: OptionsSaving {
+                io_operation_waittime: 2,
                 ..Default::default()
             },
             saving_selected: false,
@@ -518,9 +588,11 @@ impl Default for Options {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsGeneral {
+    #[serde(default)]
     pub theme: Theme,
+    #[serde(default)]
     pub theme_name: String
 }
 
@@ -531,25 +603,32 @@ pub struct OptionsAppearance {
 
 #[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsFileBrowser {
+    #[serde(default)]
     pub multi_select: bool
 }
 
 #[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsFileSelection {
+    #[serde(default)]
     pub stripped_column: bool,
+    #[serde(default)]
     pub list_folders: bool,
+    #[serde(default)]
     pub always_show_extra_row: bool
 }
 
 #[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsFileModifiers {
+    #[serde(default)]
     pub sub_modifier_maximum: u8,
+    #[serde(default)]
     pub modifiers_enabled: Vec<ModsOrder>
 }
 
 #[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsSaving {
-
+    #[serde(default)]
+    pub io_operation_waittime: u8
 }
 
 #[derive(Default, Clone, Serialize, Deserialize)]
@@ -562,8 +641,9 @@ pub struct OptionsExperimental {
 
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Default, Clone, Debug, Serialize, Deserialize)]
 pub enum OptionsList {
+    #[default]
     General,
     Appearance,
     FileBrowser,
@@ -573,9 +653,36 @@ pub enum OptionsList {
     Presets
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Default, Clone, Debug, Serialize, Deserialize)]
 pub enum Theme {
+    #[default]
     Dark,
     Light
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Edits {
+    pub redo: Option<dir::Edit>,
+    pub undo: Option<dir::Edit>
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ModifierOrder(pub Vec<ModsOrder>);
+
+impl Default for ModifierOrder {
+    fn default() -> Self {
+        Self { 0: vec![
+            ModsOrder::Case,
+            ModsOrder::Name,
+            ModsOrder::Regex,
+            ModsOrder::Remove,
+            ModsOrder::MoveCopy,
+            ModsOrder::Replace,
+            ModsOrder::Add,
+            ModsOrder::Date,
+            ModsOrder::Number,
+            ModsOrder::Ext,
+            ModsOrder::Hash
+        ]}
+    }
+}

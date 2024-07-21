@@ -1,5 +1,6 @@
 use std::fs;
 use std::io;
+use serde::{Deserialize, Serialize};
 
 pub fn get_folder(path: String, _ignore_hidden: bool) -> io::Result<Folder> {
     let mut f = Folder {
@@ -100,7 +101,7 @@ pub struct FolderItem {
     pub error: String
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct EdittedItem {
     pub name_original: String,
     pub name_edited: String,
@@ -108,7 +109,7 @@ pub struct EdittedItem {
     pub path_edited: String
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Edit {
     pub tag: String,
     pub items: Vec<EdittedItem>,

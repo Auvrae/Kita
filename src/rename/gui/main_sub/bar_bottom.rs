@@ -10,12 +10,6 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
         ui.horizontal(|ui| {
             ui.label(format!("v{}", env!("CARGO_PKG_VERSION").to_string()));
 
-            ui.separator();
-            
-            if ui.button("Save Settings").clicked() {
-                config::write_config(gui.options.clone()).unwrap();
-            }
-
             ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
                 let year = gui.local_time.format("%Y");
                 let month = gui.local_time.format("%m");

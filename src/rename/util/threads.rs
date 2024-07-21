@@ -146,7 +146,7 @@ pub fn thread(gui: &mut app::WindowMain, func: ThreadFunction) -> JoinHandle<()>
             }) 
         },
         
-        ThreadFunction::SaveUndoRedo(edit) => {
+        ThreadFunction::SaveUndoRedo(edit, save_type, time_out) => {
             spawn(move || {
                 let progress_slice: f32 = (1.0 / (edit.items.len() as f32 - 1.0) as f32) * 100.0;
     
@@ -155,19 +155,55 @@ pub fn thread(gui: &mut app::WindowMain, func: ThreadFunction) -> JoinHandle<()>
                 let mut errored: bool = false;
                 let mut errs: Vec<String> = vec![];
                 // Commit Changes
-                for item in &edit.items {
-                    match rename_file(item.path_original.to_owned(), item.path_edited.to_owned()) {
-                        Ok(_) => {
-                            *progress.lock().unwrap() += progress_slice;
-                        },
-                        Err(err) => {
-                            errored = true;
-                            println!("{}", err.to_string());
-                            errs.push(err.to_string());
-                            *state.lock().unwrap() = ThreadState::Errored;
+                match save_type {
+                    SaveType::Save => {
+                        for item in &edit.items {
+                            match rename_file(item.path_original.to_owned(), item.path_edited.to_owned()) {
+                                Ok(_) => {
+                                    *progress.lock().unwrap() += progress_slice;
+                                },
+                                Err(err) => {
+                                    errored = true;
+                                    println!("{}", err.to_string());
+                                    errs.push(err.to_string());
+                                    *state.lock().unwrap() = ThreadState::Errored;
+                                }
+                            }
+                            timeout(Duration::from_millis(time_out as u64));
+                        }
+                    },
+                    SaveType::Undo => {
+                        for item in &edit.items {
+                            match rename_file(item.path_edited.to_owned(), item.path_original.to_owned()) {
+                                Ok(_) => {
+                                    *progress.lock().unwrap() += progress_slice;
+                                },
+                                Err(err) => {
+                                    errored = true;
+                                    println!("{}", err.to_string());
+                                    errs.push(err.to_string());
+                                    *state.lock().unwrap() = ThreadState::Errored;
+                                }
+                            }
+                            timeout(Duration::from_millis(time_out as u64));
+                        }
+                    }, 
+                    SaveType::Redo => {
+                        for item in &edit.items {
+                            match rename_file(item.path_original.to_owned(), item.path_edited.to_owned()) {
+                                Ok(_) => {
+                                    *progress.lock().unwrap() += progress_slice;
+                                },
+                                Err(err) => {
+                                    errored = true;
+                                    println!("{}", err.to_string());
+                                    errs.push(err.to_string());
+                                    *state.lock().unwrap() = ThreadState::Errored;
+                                }
+                            }
+                            timeout(Duration::from_millis(time_out as u64));
                         }
                     }
-                    timeout(Duration::from_millis(1));
                 }
                 if errored {
                     *errors.lock().unwrap() = errs.to_owned();
@@ -305,7 +341,7 @@ pub enum ThreadState {
 #[derive(Clone)]
 pub enum ThreadFunction {
     Hash(HashType, Vec<(String, usize, usize)>, Endianness),
-    SaveUndoRedo(dir::Edit),
+    SaveUndoRedo(dir::Edit, SaveType, u8),
     StringProcessing(u8)
 }
 
@@ -325,4 +361,11 @@ pub enum ModifierThreadError {
     InvalidChar(Vec<(usize, char)>),
     /// Vec<(File Indexx, Invalid String)>
     InvalidFileName(Vec<(usize, String)>)
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub enum SaveType {
+    Save,
+    Redo,
+    Undo
 }
