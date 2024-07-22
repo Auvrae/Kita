@@ -39,5 +39,6 @@ users = "*"
 [target.'cfg(windows)'.dependencies]
 windows = { version = "*", features = [ "Win32", "Win32_Storage", "Win32_Storage_FileSystem" ] }
 winapi = { version = "*", features = ["winnt", "wincon"] }
+winreg = "*"
 
 

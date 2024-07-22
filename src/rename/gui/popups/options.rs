@@ -75,7 +75,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                 ui.separator();
                 if ui.add_sized(
                     egui::vec2(125.0, ui.available_height() + 5.0), 
-                    egui::widgets::SelectableLabel::new(gui.options.preset_selected, "Saving")
+                    egui::widgets::SelectableLabel::new(gui.options.saving_selected, "Saving")
                 ).clicked() {
                     gui.options.sub_section_selected = OptionsList::Saving;
                     if someone_selected(gui) {
