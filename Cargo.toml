@@ -13,10 +13,10 @@ debug-assertions = false
 
 [dependencies]
 utils = { path = "./dependencies/rust-utils"}
-egui = { path = "./dependencies/egui/crates/egui" }
-eframe = { path = "./dependencies/egui/crates/eframe" }
-egui_extras = { path = "./dependencies/egui/crates/egui_extras" }
-egui_plot = { path = "./dependencies/egui/crates/egui_plot" }
+egui = "0.28.1"
+eframe = "0.28.1"
+egui_extras = "0.28.1"
+egui_plot = "0.28.1"
 whoami = "*"
 md-5 = "*"
 rfd = "*"

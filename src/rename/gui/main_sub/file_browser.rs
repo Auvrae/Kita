@@ -1,8 +1,11 @@
-use std::time::Instant;
-
 use super::super::super::app::WindowMain;
 use super::super::super::debug::DebugStatType;
 use super::super::main_sub::file_browser;
+
+use std::collections::BTreeMap;
+use std::time::Instant;
+use std::fs;
+use utils;
 
 pub fn browser(gui: &mut WindowMain, ui: &mut egui::Ui, ctx: &egui::Context) {
     let start = Instant::now();
@@ -22,8 +25,11 @@ pub fn browser(gui: &mut WindowMain, ui: &mut egui::Ui, ctx: &egui::Context) {
                             for (index, mount) in gui.file_mounts.clone().iter().enumerate() {
                                 if ui.selectable_label(false, mount).clicked() {
                                     gui.file_mounts_selected = index as u8;
-                                    gui.file_browser.roots = gui.read_directory(mount.to_owned(), true, vec![]);
-                                    gui.file_browser.selected_children.clear();
+                                    gui.file_browser.folder_map.clear();
+                                    gui.file_browser.selected_folders.clear();
+                                    for folder in WindowMain::read_directory(String::from(gui.file_mounts[index].clone()), true) {
+                                        gui.file_browser.folder_map.insert(folder.full_path.to_owned(), folder);
+                                    }
                                 }
                             };
                         });
@@ -43,16 +49,21 @@ pub fn browser(gui: &mut WindowMain, ui: &mut egui::Ui, ctx: &egui::Context) {
                     if button.clicked() {
                         #[cfg(target_os="windows")] {
                             if !gui.file_mounts.is_empty() {
-                                gui.file_browser.roots = gui.read_directory(String::from(gui.file_mounts[0].clone()), true, vec![]);
-                                gui.file_mounts_selected = 0;
-                                gui.file_browser.selected_children.clear();
-                                gui.file_browser.selected_children_paths.clear();
+                                gui.file_browser.folder_map.clear();
+                                gui.file_browser.selected_folders.clear();
+                                for mount in gui.file_mounts.clone() {
+                                    for folder in WindowMain::read_directory(mount, true) {
+                                        gui.file_browser.folder_map.insert(folder.full_path.to_owned(), folder);
+                                    };
+                                }
                             }
                         }
                         #[cfg(target_os="linux")] {
-                            gui.file_browser.roots = gui.read_directory(String::from("/"), true, vec![]);
-                            gui.file_browser.selected_children.clear();
-                            gui.file_browser.selected_children_paths.clear();
+                            gui.file_browser.folder_map.clear();
+                            gui.file_browser.selected_folders.clear();
+                            for folder in WindowMain::read_directory(gui.file_browser.root.clone(), true) {
+                                gui.file_browser.folder_map.insert(folder.full_path.to_owned(), folder);
+                            }
                         }
                     };
                     if button.hovered() {
@@ -70,12 +81,18 @@ pub fn browser(gui: &mut WindowMain, ui: &mut egui::Ui, ctx: &egui::Context) {
             .show(ui, |ui| {
                 ui.set_width(ui.available_width());
                 ui.set_min_height(ui.available_height());
-                let mut roots: Vec<file_browser::BrowserItem> = vec![];
-                for mut root in gui.file_browser.roots.clone() {
-                    fill_tree(gui, &mut root, ui, ctx);
-                    roots.push(root);
+                #[cfg(target_os="windows")] {
+                    let children = gui.file_browser.get_children_of(gui.file_mounts[gui.file_mounts_selected as usize].to_owned()).unwrap();
+                    for child in children {
+                        fill_tree(gui, child, ui, ctx);
+                    }
                 };
-                gui.file_browser.roots = roots;
+                #[cfg(target_os="linux")] {
+                    let children = gui.file_browser.get_children_of(String::from("/")).unwrap();
+                    for child in children {
+                        fill_tree(gui, child, ui, ctx);
+                    }
+                };
             });
         });
     });
@@ -84,92 +101,88 @@ pub fn browser(gui: &mut WindowMain, ui: &mut egui::Ui, ctx: &egui::Context) {
     gui.statistics.push(start.elapsed().as_micros() as u32, DebugStatType::GuiBrowser);
 }
 
-pub fn browse_to(gui: &mut WindowMain, path: String) {
-    
-}
-
-fn fill_tree(gui: &mut WindowMain, item: &mut BrowserItem, ui: &mut egui::Ui, ctx: &egui::Context) {
-    let mut header = egui::collapsing_header::CollapsingState::load_with_default_open(ctx, item.id, false);
-    header.set_open(item.entered);
+fn fill_tree(gui: &mut WindowMain, parent: String, ui: &mut egui::Ui, ctx: &egui::Context) {
+    let (path, mut root) = gui.file_browser.folder_map.remove_entry(&parent).unwrap();
+    let mut header = egui::collapsing_header::CollapsingState::load_with_default_open(ctx, root.ctx_id, false);
+    header.set_open(root.entered);
     let response = header.show_header(ui, |ui| {
-        let title = ui.selectable_label(item.selected, item.title.clone());
-        if item.selected && !gui.file_browser.selected_children.contains(&item.depth) {
-            item.selected = false;
+        let title = ui.selectable_label(root.selected, root.title.clone());
+        if root.selected && !gui.file_browser.selected_folders.contains(&root.full_path) {
+            root.selected = false;
         };
-        if title.clicked() && item.selected == false {
-            select_and_travel(gui, item, ctx, false);
+        if title.clicked() && root.selected == false {
+            //select_and_travel(gui, root, ctx, false);
             if gui.options.file_browser.multi_select == true {
-                gui.file_browser.selected_children.push(item.depth.to_owned());
-                if item.root {
-                    gui.file_browser.selected_children_paths.push(format!("{}{}", item.path, item.title));
+                if root.root {
+                    gui.file_browser.selected_folders.push(format!("{}{}", root.parent, root.title));
                 } else {
-                    gui.file_browser.selected_children_paths.push(format!("{}/{}", item.path, item.title));
+                    gui.file_browser.selected_folders.push(format!("{}/{}", root.parent, root.title));
                 };
-            } else if gui.file_browser.selected_children.len() >= 1 {
-                    gui.file_browser.selected_children.clear();
-                    gui.file_browser.selected_children.push(item.depth.to_owned());
-                    gui.file_browser.selected_children_paths.clear();
-                    if item.root {
-                        gui.file_browser.selected_children_paths.push(format!("{}{}", item.path, item.title));
+            } else if gui.file_browser.selected_folders.len() >= 1 {
+                    gui.file_browser.selected_folders.clear();
+                    if root.root {
+                        gui.file_browser.selected_folders.push(format!("{}{}", root.parent, root.title));
                     } else {
-                        gui.file_browser.selected_children_paths.push(format!("{}/{}", item.path, item.title));
+                        gui.file_browser.selected_folders.push(format!("{}/{}", root.parent, root.title));
                     };
             } else {
-                gui.file_browser.selected_children.push(item.depth.to_owned());
-                if item.root {
-                    gui.file_browser.selected_children_paths.push(format!("{}{}", item.path, item.title));
+                if root.root {
+                    gui.file_browser.selected_folders.push(format!("{}{}", root.parent, root.title));
                 } else {
-                    gui.file_browser.selected_children_paths.push(format!("{}/{}", item.path, item.title));
+                    gui.file_browser.selected_folders.push(format!("{}/{}", root.parent, root.title));
                 };
             }
-            item.selected = true;
-        } else if title.clicked() && item.selected == true {
+            root.selected = true;
+        } else if title.clicked() && root.selected == true {
             if gui.options.file_browser.multi_select == true {
-                for (index, depth) in gui.file_browser.selected_children.clone().iter().enumerate() {
-                    if *depth == item.depth {
-                        gui.file_browser.selected_children.remove(index);  
-                        gui.file_browser.selected_children_paths.remove(index);
+                for (index, path) in gui.file_browser.selected_folders.clone().iter().enumerate() {
+                    if *path == root.full_path {
+                        gui.file_browser.selected_folders.remove(index);
                         break;
                     }
                 }
             } else {
-                gui.file_browser.selected_children.clear();
-                gui.file_browser.selected_children_paths.clear();
+                gui.file_browser.selected_folders.clear();
             }
-            item.selected = false;
+            root.selected = false;
         }
     });
     let (mut header_res, _body_res, _) = response.body(|ui| {
-        let mut children: Vec<BrowserItem> = vec![];
-        let mut children_ids: Vec<egui::Id> = vec![];
-        for mut child in item.children.clone() {
-            fill_tree(gui, &mut child, ui, ctx);
-            children_ids.push(child.id);
-            children.push(child);
-        }
-        item.children = children;
-        item.children_ids = children_ids;
+        let children = gui.file_browser.get_children_of(parent);
+        if children.is_some() {
+            let children = children.unwrap();
+            for child in children {
+                fill_tree(gui, child, ui, ctx);
+            };
+        };
     });
-    if item.selected {
+    if root.selected {
         header_res = header_res.highlight();
     };
     if header_res.clicked() {
-        select_and_travel(gui, item, ctx, true);
+        select_and_travel(gui, &mut root, ctx, true);
     };
-}   
+    gui.file_browser.folder_map.insert(path, root);
+}
 
-fn select_and_travel(gui: &mut WindowMain, item: &mut BrowserItem, ctx: &egui::Context, collapsing: bool) {
+fn select_and_travel(gui: &mut WindowMain, item: &mut MapFolder, ctx: &egui::Context, collapsing: bool) {
     if item.entered == false {
         if collapsing == true {
             item.entered = true;
         };
         if item.root {
             if collapsing == true {
-                item.children = gui.read_directory(format!("{}{}", item.path, item.title), false, item.depth.to_owned());
+                let children = WindowMain::read_directory(format!("{}{}", item.parent, item.title), false);
+                for child in children {
+                    gui.file_browser.folder_map.insert(child.full_path.to_owned(), child);
+                }
             };
         } else {
             if collapsing == true{
-                item.children = gui.read_directory(format!("{}/{}", item.path, item.title), false, item.depth.to_owned());
+                let children = WindowMain::read_directory(format!("{}/{}", item.parent, item.title), false);
+                for child in children {
+                    gui.file_browser.folder_map.insert(child.full_path.to_owned(), child);
+                }
             };
         };
     } else {
@@ -180,58 +193,147 @@ fn select_and_travel(gui: &mut WindowMain, item: &mut BrowserItem, ctx: &egui::C
     };
 }
 
-fn close_children(gui: &mut WindowMain, item: &mut BrowserItem, ctx: &egui::Context) {
-    for mut child in item.children.clone() {
-        close_children(gui, &mut child, ctx);
-        match egui::collapsing_header::CollapsingState::load(ctx, child.id) {
-            Some(child) => {
-                child.remove(ctx);
-            }, None => {}
-        };
-        for (index, depth) in gui.file_browser.selected_children.clone().iter().enumerate() {
-            if *depth == child.depth {
-                gui.file_browser.selected_children.remove(index);  
-                gui.file_browser.selected_children_paths.remove(index);
-                break;
+fn close_children(gui: &mut WindowMain, item: &mut MapFolder, ctx: &egui::Context) {
+    let children = gui.file_browser.get_children_of(item.full_path.to_owned());
+    if children.is_some() {
+        let children = children.unwrap();
+        for child in children {
+            if gui.file_browser.selected_folders.contains(&child) {
+                let mut match_index: Option<usize> = None;
+                for (index, path) in gui.file_browser.selected_folders.iter().enumerate() {
+                    if *path == child {
+                        match_index = Some(index);
+                        break;
+                    }
+                }
+                if match_index.is_some() {
+                    gui.file_browser.selected_folders.remove(match_index.unwrap());
+                }
             }
+            let mut parent = gui.file_browser.folder_map.remove(&child).unwrap();
+            close_children(gui, &mut parent, ctx);
+            gui.file_browser.folder_map.remove(&child);
         }
-    };
-    item.children.clear();
-    item.children_ids.clear();
+    }
 }
+
 
 #[derive(Default, Clone)]
 pub struct FileBrowser {
-    pub roots: Vec<BrowserItem>,
-    pub selected_children_paths: Vec<String>,
-    pub selected_children: Vec<Vec<u32>>,
-    pub files_werent_modified: bool, // A bool that changes based on if anything has changed any of the files.
+    pub folder_map: BTreeMap<String, MapFolder>, // <Full Path, MapFolder>
+    pub selected_folders: Vec<String>,
+    pub root: String,
     pub allow_frame: bool,
     pub collapsed: bool
 }
 
 #[derive(Clone, Debug)]
-pub struct BrowserItem {
+pub struct MapFolder {
     pub title: String,
-    pub id: egui::Id,
-    pub path: String,
+    pub full_path: String, // Also it's key
+    pub parent: String, // Parent folder
+    pub root: bool,
     pub entered: bool,
     pub selected: bool,
-    pub root: bool,
-    pub children: Vec<Self>,
-    pub children_ids: Vec<egui::Id>,
-    pub depth: Vec<u32>
+    pub ctx_id: egui::Id
 }
-
-impl BrowserItem {
-    /// Digs through a BroswerItem to get to the deeply nested child. Returns a CLONE of the nested child.
-    pub fn _dig_for_child(&mut self, child: BrowserItem, depth: &mut Vec<u32>) -> BrowserItem {
-        let mut found: Self = child.clone();
-        if depth.len() >= 1 {
-            let index = depth.remove(0) as usize;
-            found = self._dig_for_child(child.children[index].clone(), depth);
-            println!("{}", index);
+impl Default for MapFolder {
+    fn default() -> Self {
+        Self {
+            title: String::new(),
+            full_path: String::new(),
+            parent: String::new(),
+            root: false,
+            entered: false,
+            selected: false,
+            ctx_id: egui::Id::from(utils::create_random_string(8))
         }
-        return found;
     }
+}
+impl FileBrowser {
+    pub fn browse_to(&mut self, path: String) -> Result<(), String> {
+        let check = fs::read_dir(path.to_owned());
+        match check { // Check if the path is valid.
+            Err(err) => {
+                return Err(err.to_string());
+            },
+            _ => {}
+        }
+        let path = path.replacen("\\", "/", 254);
+        let path_original = path.clone();
+        let path_split = path.split("/");
+        let mut path_pieces: Vec<String> = vec![];
+        
+        { // Remove empty pieces
+            for piece in path_split {
+                if piece != "" {
+                    path_pieces.push(piece.to_string());
+                }
+            }
+        }
+
+
+        let mut path: String;
+        #[cfg(target_os="windows")] {
+            path = path_pieces.remove(0);
+            
+        }
+
+        #[cfg(target_os="linux")] {
+            path = String::from("/");
+        }
+
+        self.root = path.clone();
+
+        { // Read the root
+            let branches = WindowMain::read_directory(path.to_owned(), true);
+            for (index, branch) in branches.iter().enumerate() {
+                self.folder_map.insert(branch.full_path.to_owned(), branch.to_owned());
+            };
+        }
+
+        let mut first: bool = true;
+        for (index, piece) in path_pieces.iter().enumerate() {
+            if cfg!(unix) && first == true {
+                first = false;
+                path = format!("{}{}", path, piece);
+            } else {
+                path = format!("{}/{}", path, piece);
+            }
+            let branches = WindowMain::read_directory(path.to_owned(), false);
+            for (index, branch) in branches.iter().enumerate() {
+                self.folder_map.insert(branch.full_path.to_owned(), branch.to_owned());
+            };
+
+            match self.folder_map.get_mut(&path) {
+                Some(root) => {
+                    root.entered = true;
+                },
+                None => {}
+            }
+        };
+        match self.folder_map.get_mut(&path_original) {
+            Some(i) => {
+                i.selected = true;
+                self.selected_folders.push(path_original);
+            }, 
+            None => {}
+        }
+        Ok(())
+    }
+
+    fn get_children_of(&self, parent: String) -> Option<Vec<String>> {
+        let mut children: Vec<String> = vec![];
+        for folder in self.folder_map.values() {
+            if folder.parent == parent {
+                children.push(folder.full_path.clone());
+            };
+        };
+        if children.len() >= 1 {
+            Some(children)
+        } else {
+            None
+        }
+    }
+
 }

@@ -1,5 +1,5 @@
 pub mod gui;
-pub mod tui;
+pub mod cli;
 pub mod util;
 pub mod app;
 pub mod mods;

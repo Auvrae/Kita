@@ -2,12 +2,14 @@ use super::mods::{Modifiers, ModsOrder};
 use super::presets::Presets;
 use super::util::{dir, threads::{ThreadState, ModifierThreadError, ModifierThreadStorage, ThreadFunction, ThreadStorage, Endianness, thread, SaveType}};
 use super::util::processing::file_processing::process;
-use super::gui::main_sub::file_browser::{FileBrowser, BrowserItem};
+use super::gui::main_sub::file_browser::{FileBrowser, MapFolder};
 use super::gui::main_sub::file_selector::FileSelection;
 use super::app;
 use super::debug::DebugStats;
 
 use utils;
+use std::borrow::{Borrow, BorrowMut};
+use std::collections::BTreeMap;
 use std::sync;
 use serde::{Deserialize, Serialize};
 
@@ -123,13 +125,8 @@ impl Default for WindowMain {
 
             file_mounts: vec![],
             file_mounts_selected: 0,
-            file_browser: FileBrowser {
-                allow_frame: true,
-                files_werent_modified: true,
-                collapsed: false,
-                ..Default::default()
-            },
-            
+            file_browser: FileBrowser::default(),
+
             file_selector: FileSelection {
                 allow_frame: true,
                 ..Default::default()
@@ -195,24 +192,30 @@ impl WindowMain {
         self.bar_top_enabled = false;
     }
     
-    pub fn read_directory(&mut self, path: String, root: bool, depth: Vec<u32>) -> Vec<BrowserItem> {
-        let mut items: Vec<BrowserItem> = vec![];
+    pub fn read_directory(path: String, root: bool) -> Vec<MapFolder> {
+        let mut items: Vec<MapFolder> = vec![];
         match dir::get_folder(path.to_owned(), false) {
             Ok(folder) => {
                 for index in 0..folder.list_folders.len() {
-                    let mut digging = depth.clone();
-                    digging.push(index as u32);
                     let item = &folder.list_folders[index];
-                    items.push(BrowserItem {
+                    let full_path: String;
+                    if root == true {
+                        if cfg!(unix) {
+                            full_path = format!("{}{}", path.to_owned(), item.name.to_owned());
+                        } else {
+                            full_path = format!("{}/{}", path.to_owned(), item.name.to_owned());
+                        }
+                    } else {
+                        full_path = format!("{}/{}", path.to_owned(), item.name.to_owned());
+                    }
+                    items.push(MapFolder {
                         title: item.name.to_owned(),
-                        id: egui::Id::from(utils::create_random_string(8)),
-                        path: path.to_owned(),
+                        full_path: full_path,
+                        parent: path.to_owned(),
+                        root: root,
                         entered: false,
                         selected: false,
-                        root: root.to_owned(),
-                        children: vec![],
-                        children_ids: vec![],
-                        depth: digging
+                        ctx_id: utils::create_random_string(8).into()
                     });
                 };
             },
@@ -221,6 +224,32 @@ impl WindowMain {
             }
         };
         return items;
+    }
+
+    pub fn get_windows_drive_letters(&mut self) {
+        #[cfg(target_os="windows")]
+        {
+            let mut buffer: [u8; 256] = [0; 256];
+            unsafe { windows::Win32::Storage::FileSystem::GetLogicalDriveStringsA(Some(&mut buffer)); };
+            let mut b = vec![];
+            for i in buffer.to_vec() {
+                if i != 0 {
+                    b.push(i);
+                }
+            }
+            let chars = String::from_utf8(b).unwrap();
+            let letters: Vec<&str> = chars.split_terminator('\\').collect();
+            for drive_letter in letters {
+                self.file_mounts.push(drive_letter.to_string().to_owned());
+            };
+            
+            self.file_browser.root = "C:".into();
+            for mount in self.file_mounts.iter().enumerate() {
+                if mount.1 == "C:" {
+                    self.file_mounts_selected = mount.0 as u8;
+                };
+            };
+        }
     }
 
     pub fn create_selected_vec(&mut self) -> Vec<(Vec<(String, usize, Option<String>)>, Vec<(String, usize, Option<String>)>)> {
@@ -261,7 +290,7 @@ impl WindowMain {
     }
 
     pub fn fill_selected_renamed(&mut self, renamed: Vec<(Vec<(String, usize, Option<String>)>, Vec<(String, usize, Option<String>)>)>,  errors: Vec<(Vec<ModifierThreadError>, Vec<ModifierThreadError>)>) {
-        self.file_browser.files_werent_modified = false;
+        //self.file_browser.files_werent_modified = false;
         if renamed.len() != self.file_selector.folders.len() {
             return;
         };
@@ -419,7 +448,7 @@ impl WindowMain {
         self.edits.redo = None;
 
         thread(self, ThreadFunction::SaveUndoRedo(edit, SaveType::Save, self.options.saving.io_operation_waittime));
-        self.file_browser.allow_frame = false;
+        //self.file_browser.allow_frame = false;
         self.file_selector.allow_frame = false;
         self.modifiers.allow_frame = false;
     }
@@ -436,7 +465,7 @@ impl WindowMain {
         while *self.modifier_thread_storage.state.lock().unwrap() != ThreadState::Dead {}
 
         thread(self, ThreadFunction::SaveUndoRedo(edit, SaveType::Undo, self.options.saving.io_operation_waittime));
-        self.file_browser.allow_frame = false;
+        //self.file_browser.allow_frame = false;
         self.file_selector.allow_frame = false;
         self.modifiers.allow_frame = false;
     }
@@ -453,7 +482,7 @@ impl WindowMain {
         while *self.modifier_thread_storage.state.lock().unwrap() != ThreadState::Dead {}
 
         thread(self, ThreadFunction::SaveUndoRedo(edit, SaveType::Redo, self.options.saving.io_operation_waittime));
-        self.file_browser.allow_frame = false;
+        //self.file_browser.allow_frame = false;
         self.file_selector.allow_frame = false;
         self.modifiers.allow_frame = false;
     }

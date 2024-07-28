@@ -15,11 +15,21 @@ Harcode list of folders that will not ever be accessable and don't show them eve
 
 Fix Save Modifier piece to stick to the bottom of the window regardless of space above it.
 
-Open kita to target directory {
+Add File extension filter list to preset saving window
+
+!! Open kita to target directory {
     Create function to move to path recursively and open necessary file_browser tabs.
     Create function to crawl paths. and above ^^
 }
 
-Undo / Redo buttons
+!! Undo / Redo buttons
+
+Add list view to file_browser (like the old GUI)
 
 Open recent..
+
+cli argurments {
+       -p apply preset
+    !! -o open to path
+    !! -op open to path with preset selected
+}

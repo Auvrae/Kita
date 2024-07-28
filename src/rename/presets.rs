@@ -10,6 +10,7 @@ pub struct Presets {
 pub struct Preset {
     pub name: String,
     pub modifier_order: Vec<ModsOrder>,
-    pub modifiers: Modifiers
+    pub modifiers: Modifiers,
+    pub file_extension_filter: Vec<String>
 }
 

@@ -7,6 +7,7 @@ use eframe::egui;
 use egui_extras;
 use rename::app::WindowMain;
 use rename::util::config;
+use rename::cli::parser;
 
 #[cfg(target_os="windows")]
 use winapi::um::wincon::{AttachConsole, FreeConsole, ATTACH_PARENT_PROCESS}; 
@@ -23,14 +24,6 @@ fn main() -> Result<(), eframe::Error> {
     unsafe {
         FreeConsole();
         AttachConsole(ATTACH_PARENT_PROCESS);
-    }
-
-    let mut args: Vec<String> = std::env::args().collect();
-    args.remove(0); // Remove the path argument. 
-
-    // Do CLI stuff
-    {
-        
     }
 
     let options = eframe::NativeOptions {
@@ -74,12 +67,29 @@ fn main() -> Result<(), eframe::Error> {
     }
 
     let pre_presets = config::read_presets();
-    let main = WindowMain {
-        cli_args: args,
+    let mut main = WindowMain {
         options: pre_options,
         presets: pre_presets,
         ..Default::default()
     };
+    
+    // Do CLI Commands
+    {
+        let mut args: Vec<String> = std::env::args().collect();
+        args.remove(0); // Remove the path argument. 
+        let cli = parser::parse_arguments(&mut main, args);
+        match cli {
+            parser::CliResult::Error(error) => {
+                println!("Could not be completed: {}", error);
+                std::process::exit(0);
+            },
+            parser::CliResult::Stop => {
+               return Ok(());
+            },
+            _ => {}
+        }
+    }
+
     eframe::run_native(
         "Kita",
         options,

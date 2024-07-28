@@ -1,19 +1,19 @@
-use std::time::Instant;
-
 use super::super::super::app::WindowMain;
 use super::super::super::util::dir::{Folder, get_folder};
 use super::super::super::debug::DebugStatType;
+
+use std::time::Instant;
 
 pub fn selector(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
     ui.add_enabled_ui(gui.section_selector_enabled, |ui| {
         let start = Instant::now();
         // Update Files if necessary. 
-        if gui.file_browser.selected_children_paths != gui.file_selector.previously_selected_folders {
-            gui.file_selector.previously_selected_folders = gui.file_browser.selected_children_paths.to_owned(); // Copy new paths.
+        if gui.file_browser.selected_folders != gui.file_selector.previously_selected_folders {
+            gui.file_selector.previously_selected_folders = gui.file_browser.selected_folders.to_owned(); // Copy new paths.
             gui.file_selector.folders.clear(); // Clean local folders.
             gui.file_selector.last_selected_folder.clear();
             gui.file_selector.last_selected_file.clear();
-            for path in gui.file_browser.selected_children_paths.to_owned() {
+            for path in gui.file_browser.selected_folders.to_owned() {
                 match get_folder(path, false) {
                     Ok(folder) => { 
                         gui.file_selector.folders.push(folder); 
@@ -32,7 +32,7 @@ pub fn selector(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                     }
                 };
             };
-        };
+        }; 
         
         // Gui
         ui.vertical(|ui| {
@@ -116,7 +116,7 @@ fn fill_table(
         let error = folder.errored_message.clone().unwrap();
         body.row(16.0, |mut ui| {
             ui.col(|ui| {
-                ui.strong(gui.file_browser.selected_children_paths[folder_index].to_owned());
+                ui.strong(gui.file_browser.selected_folders[folder_index].to_owned());
             });
         });
         body.row(16.0, |mut ui| {

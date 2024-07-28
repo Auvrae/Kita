@@ -17,24 +17,16 @@ impl eframe::App for WindowMain {
                 if self.no_refresh == false {
                     if cfg!(unix) {
                         self.operating_system = String::from("Unix");
-                        self.file_browser.roots = self.read_directory(String::from("/"), true, vec![]);
+                        for folder in WindowMain::read_directory(String::from("/"), true) {
+                            self.file_browser.folder_map.insert(folder.full_path.to_owned(), folder);
+                        };
+                        self.file_browser.root = String::from("/");
                     } else if cfg!(windows) { // Do windows crap.
                         #[cfg(target_os="windows")]
                         {
                             self.operating_system = String::from("Windows");
-                            self.file_browser.roots = self.read_directory(String::from("C:/"), true, vec![]);
-                            let mut buffer: [u8; 256] = [0; 256];
-                            unsafe { windows::Win32::Storage::FileSystem::GetLogicalDriveStringsA(Some(&mut buffer)); };
-                            let mut b = vec![];
-                            for i in buffer.to_vec() {
-                                if i != 0 {
-                                    b.push(i);
-                                }
-                            }
-                            let chars = String::from_utf8(b).unwrap();
-                            let letters: Vec<&str> = chars.split_terminator('\\').collect();
-                            for drive_letter in letters {
-                                self.file_mounts.push(format!("{}/", drive_letter.to_string().to_owned()))
+                            for folder in WindowMain::read_directory(String::from("C:"), false) {
+                                self.file_browser.folder_map.insert(folder.full_path.to_owned(), folder);
                             };
                         }
                     };

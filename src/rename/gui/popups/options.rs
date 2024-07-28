@@ -140,7 +140,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                         },
                         OptionsList::FileSelector => {
                             ui.checkbox(&mut gui.options.file_selection.stripped_column, "Stripped Columns");
-                            ui.checkbox(&mut gui.options.file_selection.always_show_extra_row, "---> Row Always shown");
+                            ui.checkbox(&mut gui.options.file_selection.always_show_extra_row, "Preview Row Always shown");
                             ui.checkbox(&mut gui.options.file_selection.list_folders, "Show folders");
                         },
                         OptionsList::FileModifiers => {
