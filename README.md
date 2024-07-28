@@ -112,7 +112,6 @@ If you don't feel like building yourself you can download the latest version [he
 ## Upcoming Features
 
 - build.sh and build.bat
-- CLI Agruments
 - Docs
 - Linux / Windows Context menu item
 - Open Recent folders
