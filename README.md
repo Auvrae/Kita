@@ -35,9 +35,20 @@ Kita Rename Utility is a highly customizable renaming utlity written in rust. Th
   - Preset Manager:
     - Create / Edit / Remove Presets
 - CLI:
-  - Open target directory directly with launch options (X11 / Wayland compatible via [xdg-desktop-portals](https://github.com/flatpak/xdg-desktop-portal))
+  - ✓ Open target directory directly with launch options (X11 / Wayland compatible via [xdg-desktop-portals](https://github.com/flatpak/xdg-desktop-portal))
   - Apply Presets to target directory with preview and confirmation (optional)
 - ✓ Multi-Threading
+- Context Menus:
+  - Linux:
+    - Thunar
+    - Dolphin
+    - Nautilus
+    - Krusader
+    - Nemo
+    - Caja
+    - Konqueror
+    - PCManFM
+  - ✓ Windows File Explorer
 - Modifiers:
   - ✓ Add:
     - Prefix / Suffix / Insert at [String]
