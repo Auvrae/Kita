@@ -275,7 +275,6 @@ impl FileBrowser {
         let mut path: String;
         #[cfg(target_os="windows")] {
             path = format!("{}/", path_pieces.remove(0));
-            
         }
 
         #[cfg(target_os="linux")] {

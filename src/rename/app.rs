@@ -555,7 +555,10 @@ pub struct Options {
     #[serde(default)]
     pub preset: OptionsPresets,
     #[serde(skip)]
-    pub preset_selected: bool
+    pub preset_selected: bool,
+
+    #[serde(default)]
+    pub recently_opened: Vec<String>
 }
 
 impl Default for Options {
@@ -611,7 +614,9 @@ impl Default for Options {
             preset: OptionsPresets {
                 ..Default::default()
             },
-            preset_selected: false
+            preset_selected: false,
+
+            recently_opened: vec![]
         }
     }
 }

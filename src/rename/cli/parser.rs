@@ -1,5 +1,6 @@
 use super::super::app::WindowMain;
 use super::super::presets::Preset;
+use super::super::util::config;
 
 use std::fs;
 
@@ -72,7 +73,6 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
                     #[cfg(target_os="linux")] {
                         app.no_refresh = true;
                         app.file_browser.browse_to(path.clone()).unwrap();
-                        return CliResult::Continue;
                     }
                     #[cfg(target_os="windows")] {
                         let drive_letter = &path.clone()[0..3];
@@ -86,11 +86,29 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
                             app.no_refresh = true;
                             app.file_mounts_selected = drive_index.unwrap() as u8;
                             app.file_browser.browse_to(path.clone()).unwrap();
-                            return CliResult::Continue;
                         } else {
                             return CliResult::Error(String::from("Invalid path arguement."));
                         }
                     }
+
+                    // Update Recently Open Vec
+                    {
+                        let mut was_recent: (usize, bool) = (0, false);
+                        for (index, recent_path) in app.options.recently_opened.iter().enumerate() {
+                            if recent_path == &path {
+                                was_recent = (index, true);
+                            }
+                        }
+                        if was_recent.1 == true {
+                            let recent_path = app.options.recently_opened.remove(was_recent.0);
+                            app.options.recently_opened.insert(0, recent_path);
+                            
+                        } else {
+                            app.options.recently_opened.push(path);
+                        }
+                        config::write_config(app.options.clone()).unwrap();
+                    }
+                    return CliResult::Continue;
                 } else {
                     return CliResult::Error(format!("{}",
                         "No valid path given."
@@ -107,7 +125,6 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
                     #[cfg(target_os="linux")] {
                         app.no_refresh = true;
                         app.file_browser.browse_to(path.clone()).unwrap();
-                        return CliResult::Continue;
                     }
                     #[cfg(target_os="windows")] {
                         let drive_letter = &path.clone()[0..3];
@@ -122,11 +139,30 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
                             app.no_refresh = true;
                             app.file_mounts_selected = drive_index.unwrap() as u8;
                             app.file_browser.browse_to(path.clone()).unwrap();
-                            return CliResult::Continue;
                         } else {
                             return CliResult::Error(String::from("Invalid path arguement."));
                         }
                     }
+
+                    // Update Recently Open Vec
+                    {
+                        let mut was_recent: (usize, bool) = (0, false);
+                        for (index, recent_path) in app.options.recently_opened.iter().enumerate() {
+                            if recent_path == &path {
+                                was_recent = (index, true);
+                            }
+                        }
+                        if was_recent.1 == true {
+                            let recent_path = app.options.recently_opened.remove(was_recent.0);
+                            app.options.recently_opened.insert(0, recent_path);
+                            
+                        } else {
+                            app.options.recently_opened.push(path);
+                        }
+                        config::write_config(app.options.clone()).unwrap();
+                    }
+
+                    return CliResult::Continue;
                 } else {
                     return CliResult::Error(String::from(format!("{}{}",
                         "Could not find that preset. Check to make sure you've used",

@@ -1,5 +1,7 @@
 use egui::Context;
 use super::super::super::app::WindowMain;
+use super::super::main_sub::file_selector::FileSelection;
+use super::super::super::util::threads;
 
 pub fn bar(gui: &mut WindowMain, ctx: &Context) {
     egui::TopBottomPanel::top("Top")
@@ -15,9 +17,33 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
                             gui.popups.save_confirmation = true;
                         };
                     });
-                    ui.add_enabled_ui(false, |ui| {
-                        ui.menu_button("Open recent..", |_ui| {
-                            
+                    let recent_enabled: bool;
+                    if gui.options.recently_opened.len() >= 1 {
+                        recent_enabled = true;
+                    } else {
+                        recent_enabled = false;
+                    }
+                    ui.add_enabled_ui(recent_enabled, |ui| {
+                        ui.menu_button("Open recent..", |ui| {
+                            for (_, recent_path) in gui.options.recently_opened.iter().enumerate() {
+                                if ui.selectable_label(false, recent_path.to_owned()).clicked() {
+                                    #[cfg(target_os="windows")] 
+                                    {
+                                        let root: String = recent_path.clone().split_once("/").unwrap().0.to_string();
+                                        for (index, mount) in gui.file_mounts.iter().enumerate() {
+                                            if *mount == format!("{}/", root) {
+                                                gui.file_mounts_selected = index as u8;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    *gui.modifier_thread_storage.kill_sig_string_processor.lock().unwrap() = true;
+                                    while *gui.modifier_thread_storage.state.lock().unwrap() != threads::ThreadState::Dead {}
+                                    gui.reset_processing = true;
+                                    gui.file_browser.selected_folders.clear();
+                                    gui.file_browser.browse_to(recent_path.to_owned()).unwrap();
+                                }
+                            }
                         });
                     });
     
