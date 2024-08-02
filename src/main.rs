@@ -66,22 +66,47 @@ fn main() -> Result<(), eframe::Error> {
         };
     }
 
-    let pre_presets = config::read_presets();
     let mut main = WindowMain {
         options: pre_options,
-        presets: pre_presets,
+        presets: config::read_presets(),
         ..Default::default()
     };
     
+    // Get Windows Drive Letters
+    { 
+        #[cfg(target_os="windows")] 
+        {
+            main.get_windows_drive_letters();
+        }
+    }
+
+    // Check if Windows Context Menu is installed
+    {
+        #[cfg(target_os="windows")] 
+        {
+            let installed = rename::util::contextmenu::check_registry();
+            if installed.is_some() {
+                main.options.windows_context_menu_installed = true;
+            } else {
+                main.options.windows_context_menu_installed = false;
+            }
+        }
+    }
+
+    // Make sure icon is installed
+    {
+        rename::util::icon::install_icon();
+    }
+
     // Do CLI Commands
     {
         let mut args: Vec<String> = std::env::args().collect();
-        args.remove(0); // Remove the path argument. 
+        main.path_executable = args.remove(0); // Remove the path argument. 
         let cli = parser::parse_arguments(&mut main, args);
         match cli {
             parser::CliResult::Error(error) => {
                 println!("Could not be completed: {}", error);
-                std::process::exit(0);
+                return Ok(());
             },
             parser::CliResult::Stop => {
                return Ok(());

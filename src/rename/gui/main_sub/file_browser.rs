@@ -27,6 +27,7 @@ pub fn browser(gui: &mut WindowMain, ui: &mut egui::Ui, ctx: &egui::Context) {
                                     gui.file_mounts_selected = index as u8;
                                     gui.file_browser.folder_map.clear();
                                     gui.file_browser.selected_folders.clear();
+                                    gui.file_browser.root = gui.file_mounts[index].clone();
                                     for folder in WindowMain::read_directory(String::from(gui.file_mounts[index].clone()), true) {
                                         gui.file_browser.folder_map.insert(folder.full_path.to_owned(), folder);
                                     }
@@ -48,15 +49,13 @@ pub fn browser(gui: &mut WindowMain, ui: &mut egui::Ui, ctx: &egui::Context) {
                     let button = ui.button("⟲");
                     if button.clicked() {
                         #[cfg(target_os="windows")] {
-                            if !gui.file_mounts.is_empty() {
-                                gui.file_browser.folder_map.clear();
-                                gui.file_browser.selected_folders.clear();
-                                for mount in gui.file_mounts.clone() {
-                                    for folder in WindowMain::read_directory(mount, true) {
-                                        gui.file_browser.folder_map.insert(folder.full_path.to_owned(), folder);
-                                    };
-                                }
-                            }
+                            gui.file_browser.folder_map.clear();
+                            gui.file_browser.selected_folders.clear();
+                            gui.file_mounts.clear();
+                            gui.get_windows_drive_letters();
+                            for folder in WindowMain::read_directory(gui.file_mounts[gui.file_mounts_selected.to_owned() as usize].to_owned(), true) {
+                                gui.file_browser.folder_map.insert(folder.full_path.to_owned(), folder);
+                            };
                         }
                         #[cfg(target_os="linux")] {
                             gui.file_browser.folder_map.clear();
@@ -275,7 +274,7 @@ impl FileBrowser {
 
         let mut path: String;
         #[cfg(target_os="windows")] {
-            path = path_pieces.remove(0);
+            path = format!("{}/", path_pieces.remove(0));
             
         }
 
@@ -294,7 +293,7 @@ impl FileBrowser {
 
         let mut first: bool = true;
         for (index, piece) in path_pieces.iter().enumerate() {
-            if cfg!(unix) && first == true {
+            if first == true {
                 first = false;
                 path = format!("{}{}", path, piece);
             } else {

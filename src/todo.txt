@@ -33,3 +33,9 @@ cli argurments {
     !! -o open to path
     !! -op open to path with preset selected
 }
+
+Color text boxes light theme
+
+!! CTRL+A Selects even not listed items in the selector view (folders)
+
+Ctrl + click folder and then shift + click a file doesn't select everything from top to bottom.

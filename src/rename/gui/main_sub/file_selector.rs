@@ -73,8 +73,10 @@ pub fn selector(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                     let state = gui.input_state.clone().unwrap();
                     if state.modifiers.ctrl && state.key_pressed(egui::Key::A) {
                         for (i, folder) in gui.file_selector.folders.clone().iter().enumerate() {
-                            for (u, _) in folder.selected_folders.iter().enumerate() {
-                                gui.file_selector.folders[i].selected_folders[u] = true;
+                            if gui.options.file_selection.list_folders == true {
+                                for (u, _) in folder.selected_folders.iter().enumerate() {
+                                    gui.file_selector.folders[i].selected_folders[u] = true;
+                                }
                             }
                             for (u, _) in folder.selected_files.iter().enumerate() {
                                 gui.file_selector.folders[i].selected_files[u] = true;

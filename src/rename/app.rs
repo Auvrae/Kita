@@ -1,7 +1,7 @@
 use super::mods::{Modifiers, ModsOrder};
 use super::presets::Presets;
-use super::util::{dir, threads::{ThreadState, ModifierThreadError, ModifierThreadStorage, ThreadFunction, ThreadStorage, Endianness, thread, SaveType}};
-use super::util::processing::file_processing::process;
+use super::util::{dir, threads::{ThreadState, ModifierThreadError, ModifierThreadStorage, 
+    ThreadFunction, ThreadStorage, Endianness, thread, SaveType}, processing::file_processing::process};
 use super::gui::main_sub::file_browser::{FileBrowser, MapFolder};
 use super::gui::main_sub::file_selector::FileSelection;
 use super::app;
@@ -15,10 +15,10 @@ use serde::{Deserialize, Serialize};
 
 // Main Window
 pub struct WindowMain {
+    pub path_executable: String,
     pub window_size: egui::Vec2,
     pub cpu_usage: f32,
     pub operating_system: String,
-    pub cli_args: Vec<String>,
     pub first_frame: bool,
     pub no_refresh: bool,
     pub fonts: Vec<String>,
@@ -67,10 +67,10 @@ pub struct WindowMain {
 impl Default for WindowMain {
     fn default() -> Self {
         Self {
+            path_executable: String::new(),
             window_size: egui::Vec2::new(0.0, 0.0),
             cpu_usage: f32::default(),
             operating_system: String::new(),
-            cli_args: vec![],
             first_frame: true,
             no_refresh: false,
             fonts: vec![],
@@ -200,11 +200,7 @@ impl WindowMain {
                     let item = &folder.list_folders[index];
                     let full_path: String;
                     if root == true {
-                        if cfg!(unix) {
-                            full_path = format!("{}{}", path.to_owned(), item.name.to_owned());
-                        } else {
-                            full_path = format!("{}/{}", path.to_owned(), item.name.to_owned());
-                        }
+                        full_path = format!("{}{}", path.to_owned(), item.name.to_owned())
                     } else {
                         full_path = format!("{}/{}", path.to_owned(), item.name.to_owned());
                     }
@@ -240,12 +236,12 @@ impl WindowMain {
             let chars = String::from_utf8(b).unwrap();
             let letters: Vec<&str> = chars.split_terminator('\\').collect();
             for drive_letter in letters {
-                self.file_mounts.push(drive_letter.to_string().to_owned());
+                self.file_mounts.push(format!("{}/", drive_letter.to_owned()));
             };
             
-            self.file_browser.root = "C:".into();
+            self.file_browser.root = "C:/".into();
             for mount in self.file_mounts.iter().enumerate() {
-                if mount.1 == "C:" {
+                if mount.1 == "C:/" {
                     self.file_mounts_selected = mount.0 as u8;
                 };
             };
@@ -526,7 +522,9 @@ pub struct Options {
     pub gui_scale: f32,
     #[serde(skip)]
     pub gui_scale_dragging: bool,
-    
+    #[serde(skip)]
+    pub windows_context_menu_installed: bool,
+
     #[serde(default)]
     pub modifier_order: ModifierOrder,
 
@@ -566,6 +564,7 @@ impl Default for Options {
             sub_section_selected: OptionsList::General,
             gui_scale: 0.0,
             gui_scale_dragging: false,
+            windows_context_menu_installed: false,
 
             modifier_order: ModifierOrder {0: vec![
                 ModsOrder::Case,
@@ -582,12 +581,12 @@ impl Default for Options {
             ]},
 
             general: OptionsGeneral {
-                theme: Theme::Dark,
-                theme_name: String::from("Dark")
+
             },
             general_selected: true,
             appearance: OptionsAppearance {
-                ..Default::default()
+                theme: Theme::Dark,
+                theme_name: String::from("Dark")
             },
             appearance_selected: false,
             file_browser: OptionsFileBrowser {
@@ -619,14 +618,15 @@ impl Default for Options {
 
 #[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsGeneral {
-    #[serde(default)]
-    pub theme: Theme,
-    #[serde(default)]
-    pub theme_name: String
+
 }
 
 #[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsAppearance {
+    #[serde(default)]
+    pub theme: Theme,
+    #[serde(default)]
+    pub theme_name: String
 
 }
 

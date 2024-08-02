@@ -21,14 +21,12 @@ impl eframe::App for WindowMain {
                             self.file_browser.folder_map.insert(folder.full_path.to_owned(), folder);
                         };
                         self.file_browser.root = String::from("/");
-                    } else if cfg!(windows) { // Do windows crap.
-                        #[cfg(target_os="windows")]
-                        {
-                            self.operating_system = String::from("Windows");
-                            for folder in WindowMain::read_directory(String::from("C:"), false) {
-                                self.file_browser.folder_map.insert(folder.full_path.to_owned(), folder);
-                            };
-                        }
+                    } else if cfg!(windows) {
+                        self.operating_system = String::from("Windows");
+                        for folder in WindowMain::read_directory(String::from("C:/"), true) {
+                            self.file_browser.folder_map.insert(folder.full_path.to_owned(), folder);
+                        };
+                        self.file_browser.root = String::from("C:/");
                     };
                 };
                 self.thread_storage = ThreadStorage::default();
@@ -206,12 +204,16 @@ impl eframe::App for WindowMain {
             };
 
             // Set Theme
-            match self.options.general.theme {
+            match self.options.appearance.theme {
                 Theme::Dark => {
-                    ctx.set_visuals(egui::Visuals::dark());
+                    let visuals = egui::Visuals::dark();
+                    ctx.set_visuals(visuals);
                 },
                 Theme::Light => {
-                    ctx.set_visuals(egui::Visuals::light());
+                    let mut visuals = egui::Visuals::light();
+                    visuals.panel_fill = egui::Color32::from_hex("#efefef").unwrap();
+                    visuals.extreme_bg_color = egui::Color32::from_black_alpha(20);
+                    ctx.set_visuals(visuals);
                 }
             };
         }

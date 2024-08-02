@@ -11,6 +11,10 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
         let mut verified_preset: Option<Preset> = None;
         for arg in args {
             match arg.to_ascii_lowercase().as_str() {
+                "-h" | "--help" => {
+                    println!("Help... Not compelted");
+                    std::process::exit(0);
+                }
                 "-p" => { // Apply Preset
                     operator = CliArgType::Operator(CliOperator::ApplyPreset)
                 },
@@ -40,13 +44,53 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
                 return CliResult::Continue;
             },
             CliArgType::Operator(CliOperator::ApplyPreset) => {
-
+                let preset: Preset;
+                if verified_preset.is_some() {
+                    preset = verified_preset.unwrap();
+                    app.modifiers = preset.modifiers.to_owned();
+                    app.options.modifier_order.0 = preset.modifier_order.to_owned();
+                    app.popups.save_as_preset_field_name = preset.name.to_owned();
+                } else {
+                    return CliResult::Error(String::from(format!("{}{}",
+                        "Could not find that preset. Check to make sure you've used",
+                        "the right name! If it has spaces, surround it in \"<Preset_Name>\""
+                    )))
+                };
+                let path: String;
+                if verified_path.is_some() {
+                    path = verified_path.unwrap();
+                    apply_preset(app, path, preset).unwrap();
+                } else {
+                    return CliResult::Error(format!("{}",
+                        "No valid path given."
+                    ))
+                }
             },
             CliArgType::Operator(CliOperator::OpenPath) => {
                 if verified_path.is_some() {
-                    app.no_refresh = true;
-                    app.file_browser.browse_to(verified_path.unwrap()).unwrap();
-                    return CliResult::Continue;
+                    let path = verified_path.unwrap();
+                    #[cfg(target_os="linux")] {
+                        app.no_refresh = true;
+                        app.file_browser.browse_to(path.clone()).unwrap();
+                        return CliResult::Continue;
+                    }
+                    #[cfg(target_os="windows")] {
+                        let drive_letter = &path.clone()[0..3];
+                        let mut drive_index: Option<usize> = None;
+                        for (index, mount) in app.file_mounts.iter().enumerate() {
+                            if *mount == drive_letter {
+                                drive_index = Some(index);
+                            }
+                        }
+                        if drive_index.is_some() {
+                            app.no_refresh = true;
+                            app.file_mounts_selected = drive_index.unwrap() as u8;
+                            app.file_browser.browse_to(path.clone()).unwrap();
+                            return CliResult::Continue;
+                        } else {
+                            return CliResult::Error(String::from("Invalid path arguement."));
+                        }
+                    }
                 } else {
                     return CliResult::Error(format!("{}",
                         "No valid path given."
@@ -60,13 +104,33 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
                     app.modifiers = preset.modifiers.to_owned();
                     app.options.modifier_order.0 = preset.modifier_order.to_owned();
                     app.popups.save_as_preset_field_name = preset.name.to_owned();
-                    app.no_refresh = true;
-                    app.file_browser.browse_to(path).unwrap();
-                    return CliResult::Continue;
+                    #[cfg(target_os="linux")] {
+                        app.no_refresh = true;
+                        app.file_browser.browse_to(path.clone()).unwrap();
+                        return CliResult::Continue;
+                    }
+                    #[cfg(target_os="windows")] {
+                        let drive_letter = &path.clone()[0..3];
+                        println!("{}", drive_letter);
+                        let mut drive_index: Option<usize> = None;
+                        for (index, mount) in app.file_mounts.iter().enumerate() {
+                            if *mount == drive_letter {
+                                drive_index = Some(index);
+                            }
+                        }
+                        if drive_index.is_some() {
+                            app.no_refresh = true;
+                            app.file_mounts_selected = drive_index.unwrap() as u8;
+                            app.file_browser.browse_to(path.clone()).unwrap();
+                            return CliResult::Continue;
+                        } else {
+                            return CliResult::Error(String::from("Invalid path arguement."));
+                        }
+                    }
                 } else {
                     return CliResult::Error(String::from(format!("{}{}",
                         "Could not find that preset. Check to make sure you've used",
-                        "the right name! If it has spaces surround it in \"<Preset_Name>\""
+                        "the right name! If it has spaces, surround it in \"<Preset_Name>\""
                     )))
                 };
             }
@@ -78,18 +142,18 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
 }
 
 fn apply_preset(app: &mut WindowMain, path: String, preset: Preset) -> Result<(), String> {
-
+    
 
     Err(String::from("Not implemented yet.. hehe"))
 }
 
 fn verify_path(mut path: String) -> Option<String> {
+    path = path.replacen("\\", "/", 254).to_string();
+    if path.len() >= 3 && path.ends_with("/") {
+        path = path[0..path.len() - 1].to_string();
+    }
     match fs::read_dir(&path) {
         Ok(_) => {
-            path = path.replacen("\\", "/", 254).to_string();
-            if path.ends_with("/") {
-                path = path[0..path.len() - 1].to_string();
-            }
             return Some(path);
         },
         Err(_) => {
@@ -126,17 +190,3 @@ enum CliOperator {
     OpenPreset,
     ApplyPreset
 }
-/*
-    let drive_letter = &args[0].clone()[0..2];
-    println!("{}", drive_letter);
-    let mut drive_index: Option<usize> = None;
-    for (index, mount) in main.file_mounts.iter().enumerate() {
-        if *mount == drive_letter {
-            drive_index = Some(index);
-        }
-    }
-    if drive_index.is_some() {
-        main.file_mounts_selected = drive_index.unwrap() as u8;
-        main.file_browser.browse_to(args[0].to_string()).unwrap();
-    }
-*/

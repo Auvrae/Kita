@@ -1,4 +1,5 @@
 use super::super::super::super::config;
+use super::super::super::util::contextmenu;
 use super::super::super::app::{OptionsList, WindowMain, Theme};
 
 pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
@@ -95,22 +96,36 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                     // Implement each view for each catagory
                     match gui.options.sub_section_selected {
                         OptionsList::General => {
-
+                            ui.vertical(|ui| {
+                                ui.horizontal(|ui| {
+                                    #[cfg(target_os = "windows")]
+                                    {
+                                        ui.label("Windows File Explorer context menu");
+                                        if ui.checkbox(&mut gui.options.windows_context_menu_installed, "").clicked() {
+                                            if gui.options.windows_context_menu_installed == false {
+                                                contextmenu::uninstall_registry();
+                                            } else {
+                                                contextmenu::install_registry(gui.path_executable.clone())
+                                            }
+                                        }
+                                    }
+                                });
+                            });
                         },
                         OptionsList::Appearance => {
                             ui.vertical(|ui| {
                                 ui.horizontal(|ui| {
                                     ui.label("Theme");
                                     egui::ComboBox::new("General_Theme", "")
-                                    .selected_text(gui.options.general.theme_name.to_owned())
+                                    .selected_text(gui.options.appearance.theme_name.to_owned())
                                     .show_ui(ui, |ui| {
                                         if ui.selectable_label(false, "Dark").clicked() {
-                                            gui.options.general.theme = Theme::Dark;
-                                            gui.options.general.theme_name = String::from("Dark");
+                                            gui.options.appearance.theme = Theme::Dark;
+                                            gui.options.appearance.theme_name = String::from("Dark");
                                         };
                                         if ui.selectable_label(false, "Light").clicked() {
-                                            gui.options.general.theme = Theme::Light;
-                                            gui.options.general.theme_name = String::from("Light");
+                                            gui.options.appearance.theme = Theme::Light;
+                                            gui.options.appearance.theme_name = String::from("Light");
                                         };
                                     });
                                     ui.label("UI Scale");
