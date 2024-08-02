@@ -44,8 +44,7 @@ Kita Rename Utility is a highly customizable renaming utlity written in rust. Th
   - ✓ Regex
 
 ✓ = Feature Implemented
-
-
+For a more detailed list of features, check the docs!
 
 ## Building
 
