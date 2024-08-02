@@ -24,68 +24,23 @@ Kita Rename Utility is a highly customizable renaming utlity written in rust. Th
 ## Features
 
 - ✓ Cross platform (Linux [x64, aarch64], Windows [x64])
-- Highly Customizable:
-  - ✓ Reordering Modifiers [Also changes their priorty] 
-  - ✓ Dark mode / Light mode
-  - ✓ Scaling for high DPI monitors
-  - Low power mode [Reduces framerate and thread count for better efficiency]
-- ✓ Config File (JSON) (~/.config/kita (Linux) | %appdata%/local/kita (Windows))
-- Presets:
-  - ✓ Save / Load (In Modifiers panel, or in the Preset Manager)
-  - Preset Manager:
-    - Create / Edit / Remove Presets
+- ✓ Presets
 - CLI:
-  - ✓ Open target directory directly with launch options (X11 / Wayland compatible via [xdg-desktop-portals](https://github.com/flatpak/xdg-desktop-portal))
-  - Apply Presets to target directory with preview and confirmation (optional)
-- ✓ Multi-Threading
+  - ✓ `-o <path>` Open Directory (use quotes `""` if you have spaces)
+  - ✓ `-op <path> <preset>` Open Directory and Preset (use quotes `""` if you have spaces)
+  -   `-p <path> <preset>` Apply Preset to a Directory (use quotes `""` if you have spaces)
 - Context Menus:
-  - Linux:
-    - Thunar
-    - Dolphin
-    - Nautilus
-    - Krusader
-    - Nemo
-    - Caja
-    - Konqueror
-    - PCManFM
+  -   Linux
   - ✓ Windows File Explorer
 - Modifiers:
   - ✓ Add:
-    - Prefix / Suffix / Insert at [String]
-    - Customizable Seperator [Char]
   - ✓ Case:
-    - Upper / Lower / Title / UpperFirst
-    - Except [From -> To]
   - ✓ Date [Presets / User Defined]
-    - Prefix / Suffic / Insert at [Index]
-    - Preset Formats:
-      - DMY / YMD / MDY / ISO....
-      - Customizable Seperator [Char] (date)
-      - Customizable Segregator [Char] day:month:year
   - ✓ File Extension
-    - Upper / Lower / UpperFirst / Fixed (Replace [String]) / Extra (Append [String] / Remove
   - ✓ Hash [CRC32, MD5, Sha1, Sha256] [Endianness]
   - ✓ Move/Copy
-    - Copy First / Last N [Chars]
-    - Move First / Last N [Chars]
-    - To (Start / End / at Index)
   - ✓ Name
-    - Remove 
-    - Fixed (Remove and Replace with [String])
-    - Reverse (Reverses () {} [] <> too!!)
   - ✓ Numbering
-    - Prefix / Suffix / Insert / Prefix & Suffix
-    - Modes:
-      - BaseTwo (Binary)
-      - BaseEight (Octal)
-      - BaseTen
-      - BaseSixteen (Hex)
-      - Roman Numeral
-      - Alpha Lower
-      - Alpha Upper
-      - Alpha Lower to Upper
-    - Customizable Seperator
-    - Padding
   - ✓ Regex
 
 ✓ = Feature Implemented
@@ -131,8 +86,6 @@ If you don't feel like building yourself you can download the latest version [he
 
 **Files in the root of a drive on Windows don't get listed**
 -  This program was developed solely for Linux at first. Therefore it hadn't occured to me that a user would want to rename files at the root of an drive. On Linux everything is mounted in at least one folder.. This may or may not *ever* get fixed, unless there's user demand for it.
-
-**Open Recent dropdown isn't functional**
 
 ## Lessons Learned
 
