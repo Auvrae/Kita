@@ -28,7 +28,7 @@ Kita Rename Utility is a highly customizable renaming utlity written in rust. Th
 - CLI:
   - ✓ `-o <path>` Open Directory (use quotes `""` if you have spaces)
   - ✓ `-op <path> <preset>` Open Directory and Preset (use quotes `""` if you have spaces)
-  -   `-p <path> <preset>` Apply Preset to a Directory (use quotes `""` if you have spaces)
+  -   `-ap <path> <preset>` Apply Preset to a Directory (use quotes `""` if you have spaces)
 - Context Menus:
   -   Linux
   - ✓ Windows File Explorer

@@ -189,7 +189,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
 
         ui.horizontal(|ui| {
             ui.with_layout(egui::Layout::right_to_left(egui::Align::RIGHT), |ui| {
-                if ui.button("Save Settings").clicked() {
+                if ui.button("Save").clicked() {
                     config::write_config(gui.options.clone()).unwrap();
                 }
             });

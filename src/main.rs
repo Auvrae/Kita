@@ -18,7 +18,7 @@ fn main() -> Result<(), eframe::Error> {
     /*
         We need to free the console in case it's still attached. 
         Then reattach to make sure it connects to the terminal window correctly.
-        This a janky fix for #![windows_subsystem = "windows"] to make sure the window 
+        This is a janky fix for #![windows_subsystem = "windows"] to make sure the window 
         doesn't spawn a terminal window when opening.
     */
     unsafe {
@@ -73,7 +73,7 @@ fn main() -> Result<(), eframe::Error> {
     };
     
     // Get Windows Drive Letters
-    { 
+    {
         #[cfg(target_os="windows")] 
         {
             main.get_windows_drive_letters();

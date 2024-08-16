@@ -21,7 +21,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                     egui::text_edit::TextEdit::singleline(&mut gui.popups.save_as_preset_field)
                 );
 
-                field.on_hover_text("Preset must not use any spaces. Preset name optional, will display \nthe time since EPOCH in milliseconds instead.")
+                field.on_hover_text("Preset name optional, will display \nthe time since EPOCH in milliseconds instead.")
             });
 
             ui.separator();
@@ -52,7 +52,9 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                                 },
                                 modifier_order: gui.options.modifier_order.0.clone(),
                                 modifiers: gui.modifiers.clone(),
-                                file_extension_filter: vec![]
+                                file_extension_filter: vec![],
+                                inclusion_files: false,
+                                inclusion_folders: false
                             });
                             config::write_presets(gui.presets.to_owned()).unwrap(); 
                             gui.popups.save_as_preset = false; 

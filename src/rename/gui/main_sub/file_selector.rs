@@ -63,9 +63,9 @@ pub fn selector(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                     .body(|mut body| {
                         if gui.file_selector.allow_frame == false { return };
                         for (index, folder) in gui.file_selector.folders.clone() .iter().enumerate(){
-                            let tables = fill_table(gui, &mut body, folder, index, available_width);
-                            gui.file_selector.folders[index].selected_folders = tables[0].to_owned();
-                            gui.file_selector.folders[index].selected_files = tables[1].to_owned();
+                            let mut tables = fill_table(gui, &mut body, folder, index, available_width);
+                            gui.file_selector.folders[index].selected_folders = tables.remove(0);
+                            gui.file_selector.folders[index].selected_files = tables.remove(0);
                         }
                     });
                 });
@@ -150,13 +150,13 @@ fn fill_table(
                         let state = gui.input_state.clone().unwrap();
                         if selected == true && state.modifiers.shift && !state.modifiers.ctrl {
                             let last_selected = gui.file_selector.last_selected_folder[folder_index];
-                            if index > last_selected{
+                            if (index > last_selected) && (gui.file_selector.last_selected_type == SelectedType::Folder) {
                                 let select = index - last_selected;
                                 for i in 0..=select {
                                     selected_folders[last_selected+i] = true;
                                 };
                             }
-                            else if index < last_selected {
+                            else if (index < last_selected) && (gui.file_selector.last_selected_type == SelectedType::Folder) {
                                 for i in index..=last_selected {
                                     selected_folders[i] = true;
                                 };
@@ -170,6 +170,7 @@ fn fill_table(
                     };
                     if selected == true {
                         gui.file_selector.last_selected_folder[folder_index] = index;
+                        gui.file_selector.last_selected_type = SelectedType::Folder;
                     }
                     ui.end_row();
                 });
@@ -209,13 +210,13 @@ fn fill_table(
                     let state = gui.input_state.clone().unwrap();
                     if selected == true && state.modifiers.shift && !state.modifiers.ctrl {
                         let last_selected = gui.file_selector.last_selected_file[folder_index];
-                        if index > last_selected{
+                        if (index > last_selected) && (gui.file_selector.last_selected_type == SelectedType::File) {
                             let select = index - last_selected;
                             for i in 0..=select {
                                 selected_files[last_selected+i] = true;
                             };
                         }
-                        else if index < last_selected {
+                        else if (index < last_selected) && (gui.file_selector.last_selected_type == SelectedType::File) {
                             for i in index..=last_selected {
                                 selected_files[i] = true;
                             };
@@ -229,6 +230,7 @@ fn fill_table(
                 };
                 if selected == true {
                     gui.file_selector.last_selected_file[folder_index] = index;
+                    gui.file_selector.last_selected_type = SelectedType::File;
                 };
                 ui.end_row();
             });
@@ -261,14 +263,38 @@ fn fill_table(
     return vec![selected_folders, selected_files];
 }
 
-#[derive(Default, Clone)]
+#[derive(Clone)]
 pub struct FileSelection {
     pub folders: Vec<Folder>,
     pub previously_selected_folders: Vec<String>,
     pub last_selected_folder: Vec<usize>,
     pub last_selected_file: Vec<usize>,
+    pub last_selected_type: SelectedType,
     pub selected_folder_paths: Vec<(String, usize, usize)>,
     pub selected_file_paths: Vec<(String, usize, usize)>,
     pub total_errored: u32,
     pub allow_frame: bool
+}
+
+impl Default for FileSelection {
+    fn default() -> Self {
+        Self {
+            folders: vec![],
+            previously_selected_folders: vec![],
+            last_selected_folder: vec![],
+            last_selected_file: vec![],
+            last_selected_type: SelectedType::None,
+            selected_folder_paths: vec![],
+            selected_file_paths: vec![],
+            total_errored: 0,
+            allow_frame: true
+        }
+    }
+}
+
+#[derive(Clone, PartialEq, Eq)]
+pub enum SelectedType {
+    None,
+    Folder,
+    File
 }

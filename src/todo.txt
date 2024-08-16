@@ -1,15 +1,12 @@
 Finish the about section
 
-windows context menu
+!! windows context menu
 
-User configs (in json)
+!! User configs (in json)
 
 Presets / GUI for editting them
 Auto naming presets "Replace Xxx with XXX" for the name. 
 
-Gui-less preset usage on target dir
-
-Root files shown in the picker (windows) when nothing is selected
 
 Harcode list of folders that will not ever be accessable and don't show them ever.
 
@@ -29,7 +26,7 @@ Add list view to file_browser (like the old GUI)
 Open recent..
 
 cli argurments {
-       -p apply preset
+       -ap apply preset
     !! -o open to path
     !! -op open to path with preset selected
 }
@@ -38,4 +35,6 @@ Color text boxes light theme
 
 !! CTRL+A Selects even not listed items in the selector view (folders)
 
-Ctrl + click folder and then shift + click a file doesn't select everything from top to bottom.
+Ctrl + click folder and then shift + click a file doesn't select everything from top to bottom. (rewriting logic)
+
+Update windows context menu based on where kita is located and what it's named.

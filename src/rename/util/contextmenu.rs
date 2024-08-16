@@ -1,4 +1,3 @@
-//use std::fs;
 #[cfg(target_os="windows")]
 use winreg;
 
@@ -23,7 +22,10 @@ pub fn check_registry() -> Option<()> {
         }
         return Some(());
     }
-    None
+    #[cfg(target_os="linux")]
+    {
+        return None
+    }
 }
 
 // Installs entries for the Windows File Explorer Context Menu

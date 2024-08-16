@@ -16,7 +16,7 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
                     println!("Help... Not compelted");
                     std::process::exit(0);
                 }
-                "-p" => { // Apply Preset
+                "-ap" => { // Apply Preset
                     operator = CliArgType::Operator(CliOperator::ApplyPreset)
                 },
                 "-op" => { // Open with Preset selected

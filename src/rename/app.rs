@@ -558,7 +558,9 @@ pub struct Options {
     pub preset_selected: bool,
 
     #[serde(default)]
-    pub recently_opened: Vec<String>
+    pub recently_opened: Vec<String>,
+    #[serde(skip)]
+    pub recently_opened_menu_opened: Option<usize>
 }
 
 impl Default for Options {
@@ -616,7 +618,8 @@ impl Default for Options {
             },
             preset_selected: false,
 
-            recently_opened: vec![]
+            recently_opened: vec![],
+            recently_opened_menu_opened: None
         }
     }
 }
