@@ -50,7 +50,7 @@ To Build this project on run
   git clone https://github.com/Auvrae/Kita
   cargo build -r
   mv ./target/release/kita ./Kita
-  rm -r ./target && rm -r dependencies
+  rm -r ./target
 ```
 
 **Windows**
