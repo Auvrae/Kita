@@ -5,6 +5,7 @@ Kita Rename Utility is a highly customizable renaming utlity written in rust. Th
 
 
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
+![image](https://github.com/user-attachments/assets/bf528f8c-a295-4b74-bc72-e0de8853f61e)
 
 
 ## Stack
