@@ -52,7 +52,6 @@ To Build this project on run
   mkdir dependencies
   cd dependencies
   git clone https://github.com/Auvrae/rust-utils
-  git clone https://github.com/emilk/egui
   cd ..
   cargo build -r
   mv ./target/release/kita ./Kita
