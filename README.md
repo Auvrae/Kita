@@ -58,10 +58,6 @@ To Build this project on run
    TBD
 ```
 
-Or run the `build.sh` or `build.bat` 
-
-!! **Always read scripts you download from the internet before running them** !!
-
 If you don't feel like building yourself you can download the latest version [here](https://github.com/Auvrae/Kita/releases).
 ## Upcoming Features
 
