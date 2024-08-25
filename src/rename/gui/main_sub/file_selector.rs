@@ -137,15 +137,10 @@ fn fill_table(
 
     if gui.options.file_selection.list_folders == true {
         for (index, item) in folder.list_folders.iter().enumerate() {
-            let mut selected = false;
             body.row(16.0, |mut ui| {
                 ui.col(|ui| {
                     ui.set_width(width_available);
-                    if ui.toggle_value(&mut selected_folders[index], format!("🗁 {}", item.name.to_owned())).clicked() {
-                        selected = true;
-                    } else {
-                        selected = false;
-                    }
+                    let selected = ui.toggle_value(&mut selected_folders[index], format!("🗁 {}", item.name.to_owned())).clicked();
                     if gui.input_state.is_some() {
                         let state = gui.input_state.clone().unwrap();
                         if selected == true && state.modifiers.shift && !state.modifiers.ctrl {

@@ -32,7 +32,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                 ui.separator();
                 if ui.add_sized(
                     egui::vec2(125.0, ui.available_height() + 5.0), 
-                    egui::widgets::SelectableLabel::new(gui.options.file_browser_selected, "Browser Section")
+                    egui::widgets::SelectableLabel::new(gui.options.file_browser_selected, "File Browser")
                 ).clicked() {
                     gui.options.sub_section_selected = OptionsList::FileBrowser;
                     if someone_selected(gui) {
@@ -43,35 +43,13 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                 ui.separator();
                 if ui.add_sized(
                     egui::vec2(125.0, ui.available_height() + 5.0), 
-                    egui::widgets::SelectableLabel::new(gui.options.file_selection_selected, "Selector Section")
+                    egui::widgets::SelectableLabel::new(gui.options.file_selection_selected, "File Picker")
                 ).clicked() {
                     gui.options.sub_section_selected = OptionsList::FileSelector;
                     if someone_selected(gui) {
                         deselect_all(gui);
                     };
                     gui.options.file_selection_selected = true;
-                }
-                ui.separator();
-                if ui.add_sized(
-                    egui::vec2(125.0, ui.available_height() + 5.0), 
-                    egui::widgets::SelectableLabel::new(gui.options.file_modifiers_selected, "Modifiers Section")
-                ).clicked() {
-                    gui.options.sub_section_selected = OptionsList::FileModifiers;
-                    if someone_selected(gui) {
-                        deselect_all(gui);
-                    };
-                    gui.options.file_modifiers_selected = true;
-                }
-                ui.separator();
-                if ui.add_sized(
-                    egui::vec2(125.0, ui.available_height() + 5.0), 
-                    egui::widgets::SelectableLabel::new(gui.options.preset_selected, "Presets")
-                ).clicked() {
-                    gui.options.sub_section_selected = OptionsList::Presets;
-                    if someone_selected(gui) {
-                        deselect_all(gui);
-                    };
-                    gui.options.preset_selected = true;
                 }
                 ui.separator();
                 if ui.add_sized(

@@ -12,8 +12,8 @@ pub struct Preset {
     #[serde(default)]
     pub modifier_order: Vec<ModsOrder>,
     pub modifiers: Modifiers,
-    pub inclusion_files: bool,
-    pub inclusion_folders: bool,
+    pub include_files: bool,
+    pub include_folders: bool,
     pub file_extension_filter: Vec<String>
 }
 

@@ -6,7 +6,7 @@ mod rename;
 use eframe::egui;
 use egui_extras;
 use rename::app::WindowMain;
-use rename::util::config;
+use rename::util::{config, dir};
 use rename::cli::parser;
 
 #[cfg(target_os="windows")]
@@ -25,6 +25,9 @@ fn main() -> Result<(), eframe::Error> {
         FreeConsole();
         AttachConsole(ATTACH_PARENT_PROCESS);
     }
+
+    //dir::create_testing_files(String::from("/scratch/testing"));
+    //return Ok(());
 
     let options = eframe::NativeOptions {
         renderer: eframe::Renderer::Glow,

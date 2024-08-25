@@ -1,6 +1,6 @@
 [package]
 name = "kita"
-version = "0.25.20"
+version = "1.0.3"
 edition = "2021"
 
 [profile.release]
@@ -13,10 +13,10 @@ debug-assertions = false
 
 [dependencies]
 utils = { path = "./dependencies/rust-utils"}
-egui = "0.28.1"
-eframe = "0.28.1"
-egui_extras = "0.28.1"
-egui_plot = "0.28.1"
+egui = "*"
+eframe = "*"
+egui_extras = "*"
+egui_plot = "*"
 whoami = "*"
 md-5 = "*"
 rfd = "*"

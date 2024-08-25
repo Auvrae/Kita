@@ -158,7 +158,7 @@ pub fn modifications(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Conte
     gui.statistics.push(start.elapsed().as_micros() as u32, DebugStatType::GuiModifier);
 }
 
-fn fill_modification_container(gui: &mut WindowMain, modorder: ModsOrder, ui: &mut egui::Ui, headers_only: bool) {
+pub fn fill_modification_container(gui: &mut WindowMain, modorder: ModsOrder, ui: &mut egui::Ui, headers_only: bool) {
     if gui.modifiers.allow_frame == false { return };
     match modorder {
         ModsOrder::Add => {

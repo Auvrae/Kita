@@ -118,6 +118,8 @@ impl Default for WindowMain {
                 save_as_preset_id: egui::Id::from(utils::create_random_string(8)),
                 save_as_preset_field: String::new(),
                 save_as_preset_field_name: String::new(),
+                about: false,
+                about_id: egui::Id::from(utils::create_random_string(8)),
                 debug: false,
                 debug_id: egui::Id::from(utils::create_random_string(8)),
                 debug_plot_id: egui::Id::from(utils::create_random_string(8))
@@ -286,11 +288,21 @@ impl WindowMain {
     }
 
     pub fn fill_selected_renamed(&mut self, renamed: Vec<(Vec<(String, usize, Option<String>)>, Vec<(String, usize, Option<String>)>)>,  errors: Vec<(Vec<ModifierThreadError>, Vec<ModifierThreadError>)>) {
-        //self.file_browser.files_werent_modified = false;
+        //Check and leave if something changed.
         if renamed.len() != self.file_selector.folders.len() {
             return;
         };
         for (index, folder) in renamed.iter().enumerate() {
+            // Check and leave if something changed.
+            {
+                if folder.0.len() != self.file_selector.folders[index].list_folders.len() {
+                    return;
+                }
+                if folder.1.len() != self.file_selector.folders[index].list_files.len() {
+                    return;
+                }
+            }
+
             for (_, fold) in folder.0.iter().enumerate() {
                 self.file_selector.folders[index].list_folders[fold.1].name_modified = fold.0.to_owned();
             }
@@ -509,6 +521,8 @@ pub struct GuiPopUps{
     pub save_as_preset_id: egui::Id,
     pub save_as_preset_field: String,
     pub save_as_preset_field_name: String,
+    pub about: bool,
+    pub about_id: egui::Id,
     pub debug: bool,
     pub debug_id: egui::Id,
     pub debug_plot_id: egui::Id

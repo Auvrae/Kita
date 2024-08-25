@@ -1,6 +1,6 @@
 use super::super::app::WindowMain;
 use super::super::presets::Preset;
-use super::super::util::config;
+use super::super::util::{config, dir};
 
 use std::fs;
 
@@ -13,7 +13,16 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
         for arg in args {
             match arg.to_ascii_lowercase().as_str() {
                 "-h" | "--help" => {
-                    println!("Help... Not compelted");
+                    println!("{}", format!("{}{}{}{}{}{}{}{}",
+                        "Kita Rename Utility v",
+                        env!("CARGO_PKG_VERSION").to_string(),
+                        " usage:\n",
+                        "-h | --help         : Help\n",
+                        "-o <path>           : Opens Kita (gui) to a path\n",
+                        "-op <path> <preset> : Opens Kita (gui) to a path with a preset pre-selected\n",
+                        "-ap <path> <preset> : Applies a preset to a path (cli) (upcoming feature)\n\n",
+                        "Submit a bug report here:  https://github.com/Auvrae/Kita/issues"
+                    ));
                     std::process::exit(0);
                 }
                 "-ap" => { // Apply Preset
@@ -178,9 +187,16 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
 }
 
 fn apply_preset(app: &mut WindowMain, path: String, preset: Preset) -> Result<(), String> {
-    
+    // Setup 
+    app.modifiers = preset.modifiers.to_owned();
+    app.options.modifier_order.0 = preset.modifier_order.to_owned();
+    let folder = dir::get_folder(path, true).unwrap();
 
-    Err(String::from("Not implemented yet.. hehe"))
+    // Select files based on Preset
+     
+
+
+    Err(String::from("Work in Progress"))
 }
 
 fn verify_path(mut path: String) -> Option<String> {

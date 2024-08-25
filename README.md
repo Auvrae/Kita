@@ -13,12 +13,6 @@ Kita Rename Utility is a highly customizable renaming utlity written in rust. Th
 
 **File Hashing** [MD5 / Sha1 / Sha256](https://github.com/RustCrypto/hashes) - Collection of cryptographic hash functions written in pure Rust
 
-**Config Files** [JSON](https://github.com/maciejhirsz/json-rust) - JSON implementation in Rust 
-
-
-
-
-
 
 
 ## Features
@@ -77,9 +71,9 @@ Or run the `build.sh` or `build.bat`
 If you don't feel like building yourself you can download the latest version [here](https://github.com/Auvrae/Kita/releases).
 ## Upcoming Features
 
+- Right-click open menus!
 - build.sh and build.bat
 - Docs
-- Open Recent folders
 
 
 ## Known Issues

@@ -1,12 +1,11 @@
-Finish the about section
+!! Finish the about section
 
 !! windows context menu
 
 !! User configs (in json)
 
 Presets / GUI for editting them
-Auto naming presets "Replace Xxx with XXX" for the name. 
-
+Auto naming presets "Replace Xxx with XXX" for the name. (not sure if I should implement that)
 
 Harcode list of folders that will not ever be accessable and don't show them ever.
 
@@ -23,7 +22,8 @@ Add File extension filter list to preset saving window
 
 Add list view to file_browser (like the old GUI)
 
-Open recent..
+!! Open recent..
+Open recent right-click on item to delete
 
 cli argurments {
        -ap apply preset
@@ -31,10 +31,10 @@ cli argurments {
     !! -op open to path with preset selected
 }
 
-Color text boxes light theme
+!! Color text boxes light theme
 
 !! CTRL+A Selects even not listed items in the selector view (folders)
 
-Ctrl + click folder and then shift + click a file doesn't select everything from top to bottom. (rewriting logic)
+!! Ctrl + click folder and then shift + click a file doesn't select everything from top to bottom. (rewriting logic)
 
 Update windows context menu based on where kita is located and what it's named.

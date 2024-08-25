@@ -9,7 +9,7 @@ pub fn window(_gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
         ui.group(|ui| {
             ui.set_min_size(egui::Vec2::new(955.0, 495.0));
             ui.set_max_size(egui::Vec2::new(955.0, 495.0));
-            
+                
         });
     });
 }

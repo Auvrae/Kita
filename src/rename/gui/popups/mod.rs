@@ -1,3 +1,4 @@
+pub mod about;
 pub mod error;
 pub mod options;
 pub mod preset_manager;

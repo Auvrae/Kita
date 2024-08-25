@@ -55,9 +55,8 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
                                 if gui.options.recently_opened_menu_opened.is_some() {
                                     let label_index = gui.options.recently_opened_menu_opened.clone().take().unwrap();
                                     selectable.context_menu(|ui| {
-                                        if ui.button("Remove Item").clicked() {
-                                            
-                                        };
+                                        // Implement right-click options
+                                        
                                     });
                                 }
                             }
@@ -134,6 +133,12 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
                         ui.close_menu();
                     }
                     */
+                });
+                ui.menu_button("About", |ui| {
+                    if ui.button("Kita Rename Utility").clicked() {
+                        gui.popups.about = !gui.popups.about;
+                        ui.close_menu();
+                    }
                 });
             });
         });

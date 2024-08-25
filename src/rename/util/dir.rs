@@ -78,6 +78,25 @@ pub fn _read_folder(path: String) -> io::Result<Vec<String>> {
     };
 }
 
+pub fn create_testing_files(path: String) {
+    const FILES: [&str; 10] = [
+        "mankind donator parish",
+        "unbundle plating retake",
+        "favorable catering emotion",
+        "strangle imperfect preacher",
+        "overtime egging rephrase",
+        "lushness posted refried",
+        "swiftness drew racoon",
+        "hardware flashcard corporal",
+        "operative direction apricot",
+        "unroasted sedate revisit"
+    ];
+    for file in FILES {
+        //let random_data_buffer: Vec<u8> = utils::get_random_buffer(32);
+        fs::write(format!("{path}/{file}"), &vec![0]).unwrap();
+    };
+}
+
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Default)]
 pub struct Folder {
     pub path: String,

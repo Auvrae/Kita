@@ -43,6 +43,29 @@ impl eframe::App for WindowMain {
                 }; // Store OS scale.
                 self.no_refresh = false;
                 self.first_frame = false;
+
+                // Setup Custom Font
+                {
+                    let mut fonts = egui::FontDefinitions::default();
+                    fonts.font_data.insert(
+                        "0xProGen".to_owned(),
+                        egui::FontData::from_static(include_bytes!(
+                            "../../../src/fonts/0xProGen-Regular.ttf"
+                        )),
+                    );
+                    fonts
+                        .families
+                        .entry(egui::FontFamily::Proportional)
+                        .or_default()
+                        .insert(0, "0xProGen".to_owned());
+                    fonts
+                        .families
+                        .entry(egui::FontFamily::Monospace)
+                        .or_default()
+                        .push("0xProGen".to_owned());
+                    
+                    ctx.set_fonts(fonts);
+                }
             };
         }
 
@@ -142,6 +165,20 @@ impl eframe::App for WindowMain {
                 .title_bar(true)
                 .show(ctx, |ui| {
                     popups::save_as_preset::window(self, ui, ctx);
+                });
+            }
+            
+            // Save As Preset
+            if self.popups.about {
+                egui::Window::new("About Kita")
+                .id(self.popups.about_id)
+                .default_pos(egui::pos2(self.window_size.x * 0.35, self.window_size.y * 0.35))
+                .collapsible(false)
+                .resizable(false)
+                .movable(true)
+                .title_bar(true)
+                .show(ctx, |ui| {
+                    popups::about::window(self, ui, ctx);
                 });
             }
 

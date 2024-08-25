@@ -53,8 +53,8 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                                 modifier_order: gui.options.modifier_order.0.clone(),
                                 modifiers: gui.modifiers.clone(),
                                 file_extension_filter: vec![],
-                                inclusion_files: false,
-                                inclusion_folders: false
+                                include_files: false,
+                                include_folders: false
                             });
                             config::write_presets(gui.presets.to_owned()).unwrap(); 
                             gui.popups.save_as_preset = false; 
