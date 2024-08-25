@@ -43,25 +43,14 @@ For a more detailed list of features, check the docs!
 
 ## Building
 
-To Build this project on run
+To Build this project run
 
-**Linux**
 ```bash
   git clone https://github.com/Auvrae/Kita
   cd Kita
-  mkdir dependencies
-  cd dependencies
-  git clone https://github.com/Auvrae/rust-utils
-  git clone https://github.com/emilk/egui
-  cd ..
   cargo build -r
   mv ./target/release/kita ./Kita
-  rm -r ./target && rm -r dependencies
-```
-
-**Windows**
-```bat
-   TBD
+  rm -r ./target
 ```
 
 Or run the `build.sh` or `build.bat` 

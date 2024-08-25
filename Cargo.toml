@@ -12,7 +12,7 @@ lto = true
 debug-assertions = false
 
 [dependencies]
-utils = { path = "./dependencies/rust-utils"}
+utils = { git = "https://github.com/Auvrae/rust-utils"}
 egui = "*"
 eframe = "*"
 egui_extras = "*"
