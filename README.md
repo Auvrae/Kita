@@ -71,7 +71,7 @@ Or run the `build.sh` or `build.bat`
 If you don't feel like building yourself you can download the latest version [here](https://github.com/Auvrae/Kita/releases).
 ## Upcoming Features
 
-- Right-click open menus!
+- Right-click menus!
 - build.sh and build.bat
 - Docs
 
