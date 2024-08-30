@@ -63,7 +63,6 @@ If you don't feel like building yourself you can download the latest version [he
 ## Upcoming Features
 
 - Right-click menus!
-- build.sh and build.bat
 - Docs
 
 
