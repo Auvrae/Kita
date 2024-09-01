@@ -110,7 +110,6 @@ fn fill_tree(gui: &mut WindowMain, parent: String, ui: &mut egui::Ui, ctx: &egui
             root.selected = false;
         };
         if title.clicked() && root.selected == false {
-            //select_and_travel(gui, root, ctx, false);
             if gui.options.file_browser.multi_select == true {
                 if root.root {
                     gui.file_browser.selected_folders.push(format!("{}{}", root.parent, root.title));

@@ -293,16 +293,6 @@ impl WindowMain {
             return;
         };
         for (index, folder) in renamed.iter().enumerate() {
-            // Check and leave if something changed.
-            {
-                if folder.0.len() != self.file_selector.folders[index].list_folders.len() {
-                    return;
-                }
-                if folder.1.len() != self.file_selector.folders[index].list_files.len() {
-                    return;
-                }
-            }
-
             for (_, fold) in folder.0.iter().enumerate() {
                 self.file_selector.folders[index].list_folders[fold.1].name_modified = fold.0.to_owned();
             }

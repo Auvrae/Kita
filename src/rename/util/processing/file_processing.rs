@@ -189,6 +189,10 @@ pub fn process(_index: usize, modifiers: &mut Modifiers, file_names: Vec<(String
             files_over_length.push((file.1, file_name.chars().count() as u32))
         };
 
+        if file_name.len() == 0 {
+            invalid_names.push((file.1, file.0.clone()));
+        };
+
     };
     errors.push(ModifierThreadError::DuplicateFileName(duplicates));
     errors.push(ModifierThreadError::LengthLimitFileName(files_over_length));

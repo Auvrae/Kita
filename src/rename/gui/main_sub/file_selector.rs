@@ -145,13 +145,13 @@ fn fill_table(
                         let state = gui.input_state.clone().unwrap();
                         if selected == true && state.modifiers.shift && !state.modifiers.ctrl {
                             let last_selected = gui.file_selector.last_selected_folder[folder_index];
-                            if (index > last_selected) && (gui.file_selector.last_selected_type == SelectedType::Folder) {
+                            if (index > last_selected) && (gui.file_selector.last_selected_type != SelectedType::File) {
                                 let select = index - last_selected;
                                 for i in 0..=select {
                                     selected_folders[last_selected+i] = true;
                                 };
                             }
-                            else if (index < last_selected) && (gui.file_selector.last_selected_type == SelectedType::Folder) {
+                            else if (index < last_selected) && (gui.file_selector.last_selected_type != SelectedType::File) {
                                 for i in index..=last_selected {
                                     selected_folders[i] = true;
                                 };
@@ -205,13 +205,13 @@ fn fill_table(
                     let state = gui.input_state.clone().unwrap();
                     if selected == true && state.modifiers.shift && !state.modifiers.ctrl {
                         let last_selected = gui.file_selector.last_selected_file[folder_index];
-                        if (index > last_selected) && (gui.file_selector.last_selected_type == SelectedType::File) {
+                        if (index > last_selected) && (gui.file_selector.last_selected_type != SelectedType::Folder) {
                             let select = index - last_selected;
                             for i in 0..=select {
                                 selected_files[last_selected+i] = true;
                             };
                         }
-                        else if (index < last_selected) && (gui.file_selector.last_selected_type == SelectedType::File) {
+                        else if (index < last_selected) && (gui.file_selector.last_selected_type != SelectedType::Folder) {
                             for i in index..=last_selected {
                                 selected_files[i] = true;
                             };
