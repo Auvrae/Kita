@@ -118,6 +118,19 @@ fn main() -> Result<(), eframe::Error> {
         }
     }
 
+    // Open with preset selected, if option is enabled
+    {
+        if main.options.preset.always_select_last_used == true {
+            for (index, preset) in main.presets.sets.iter().enumerate() {
+                if preset.name == main.options.preset.last_used_preset {
+                    main.modifiers = preset.modifiers.clone();
+                    main.options.modifier_order.0 = preset.modifier_order.clone();
+                    main.popups.save_as_preset_field_name = preset.name.clone();
+                };
+            };
+        };
+    }
+
     eframe::run_native(
         "Kita",
         options,

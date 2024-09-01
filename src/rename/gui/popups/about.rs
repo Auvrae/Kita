@@ -14,7 +14,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, ctx: &egui::Context) {
                     ui.with_layout(egui::Layout::centered_and_justified(egui::Direction::TopDown), |ui| {
                         let mut header_text = egui::text::LayoutJob::default();
                         let heading_text = format!("{}{}",
-                            "Kita is a Renaming Utility written in Rust with the aim to bring",
+                            "Kita is a Renaming Utility written in Rust with the aim to bring ",
                             "a comprehensive renaming utility to Linux.\n\n\n\n",
                         );
                         header_text.append(&heading_text, 0.0, egui::TextFormat {

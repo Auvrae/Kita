@@ -31,20 +31,28 @@ pub fn modifications(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Conte
                     egui::ComboBox::new(format!("presets"), "")
                     .selected_text(label.to_owned())
                     .show_ui(ui, |ui| {
+                        if ui.selectable_label(false, "Default").clicked() {
+                            gui.popups.save_as_preset_field_name = String::from("Default");
+                            gui.options.preset.last_used_preset = String::new();
+                            gui.modifiers = Modifiers::default();
+                            config::write_config(gui.options.clone()).unwrap();
+                        };
                         for (index, preset) in gui.presets.sets.iter().enumerate() {
                             let mut label = preset.name.clone();
                             if label.len() >= 24 {
                                 let (a, b) = preset.name.split_at(24);
                                 label = format!("{}{}", a.to_string(), "...");
-                            }
+                            };
                             let selectable = ui.selectable_label(false, label.to_owned());
                             if selectable.clicked() {
                                 gui.modifiers = preset.modifiers.to_owned();
                                 gui.options.modifier_order.0 = preset.modifier_order.to_owned();
                                 gui.popups.save_as_preset_field_name = preset.name.to_owned();
-                            }
+                                gui.options.preset.last_used_preset = preset.name.to_string();
+                                config::write_config(gui.options.clone()).unwrap();
+                            };
                             selectable.on_hover_text(&preset.name);
-                        }
+                        };
                     });
                     if ui.button("save").clicked() {
                         let mut found: bool = false;

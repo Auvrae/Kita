@@ -117,7 +117,7 @@ impl Default for WindowMain {
                 save_as_preset: false,
                 save_as_preset_id: egui::Id::from(utils::create_random_string(8)),
                 save_as_preset_field: String::new(),
-                save_as_preset_field_name: String::new(),
+                save_as_preset_field_name: String::from("Default"),
                 about: false,
                 about_id: egui::Id::from(utils::create_random_string(8)),
                 debug: false,
@@ -598,7 +598,7 @@ impl Default for Options {
             ]},
 
             general: OptionsGeneral {
-
+                ..Default::default()
             },
             general_selected: true,
             appearance: OptionsAppearance {
@@ -638,7 +638,8 @@ impl Default for Options {
 
 #[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsGeneral {
-
+    #[serde(default)]
+    pub low_power_mode: bool
 }
 
 #[derive(Default, Clone, Serialize, Deserialize)]
@@ -682,7 +683,10 @@ pub struct OptionsSaving {
 
 #[derive(Default, Clone, Serialize, Deserialize)]
 pub struct OptionsPresets {
-
+    #[serde(default)]
+    pub always_select_last_used: bool,
+    #[serde(default)]
+    pub last_used_preset: String
 }
 
 #[derive(Default, Clone, Serialize, Deserialize)]

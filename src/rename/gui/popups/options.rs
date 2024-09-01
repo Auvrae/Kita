@@ -62,6 +62,17 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                     };
                     gui.options.saving_selected = true;
                 }
+                ui.separator();
+                if ui.add_sized(
+                    egui::vec2(125.0, ui.available_height() + 5.0), 
+                    egui::widgets::SelectableLabel::new(gui.options.preset_selected, "Preset")
+                ).clicked() {
+                    gui.options.sub_section_selected = OptionsList::Presets;
+                    if someone_selected(gui) {
+                        deselect_all(gui);
+                    };
+                    gui.options.preset_selected = true;
+                }
             });
 
             ui.separator();
@@ -75,18 +86,22 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                     match gui.options.sub_section_selected {
                         OptionsList::General => {
                             ui.vertical(|ui| {
-                                ui.horizontal(|ui| {
-                                    #[cfg(target_os = "windows")]
-                                    {
+                                #[cfg(target_os = "windows")]
+                                {
+                                    ui.horizontal(|ui| {
                                         ui.label("Windows File Explorer context menu");
                                         if ui.checkbox(&mut gui.options.windows_context_menu_installed, "").clicked() {
                                             if gui.options.windows_context_menu_installed == false {
                                                 contextmenu::uninstall_registry();
                                             } else {
                                                 contextmenu::install_registry(gui.path_executable.clone())
-                                            }
-                                        }
-                                    }
+                                            };
+                                        };
+                                    });
+                                };
+                                ui.horizontal(|ui| {
+                                    ui.label("Low power mode").on_hover_text("Only draws new frames when the cursor is in motion, or when something needs to be updated.");
+                                    ui.checkbox(&mut gui.options.general.low_power_mode, "")
                                 });
                             });
                         },
@@ -142,7 +157,7 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                         OptionsList::Saving => {
                             ui.vertical(|ui| {
                                 ui.horizontal(|ui| {
-                                    ui.label("IO Operation wait time");
+                                    ui.label("Time between IO operations.").on_hover_text("A power saving setting");
                                     let slider = ui.add(
                                     egui::Slider::new(&mut gui.options.saving.io_operation_waittime, std::ops::RangeInclusive::new(0, 5))
                                     .fixed_decimals(0)
@@ -156,7 +171,12 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                             });
                         },
                         OptionsList::Presets => {
-        
+                            ui.vertical(|ui| {
+                                ui.horizontal(|ui| {
+                                    ui.label("Select last used Preset on startup");
+                                    ui.checkbox(&mut gui.options.preset.always_select_last_used, "");
+                                });
+                            });
                         }
                     }
                 });

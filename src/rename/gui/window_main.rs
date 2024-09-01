@@ -168,7 +168,8 @@ impl eframe::App for WindowMain {
                 });
             }
             
-            // Save As Preset
+            // Abot
+            let mut about: bool = self.popups.about;
             if self.popups.about {
                 egui::Window::new("About Kita")
                 .id(self.popups.about_id)
@@ -176,11 +177,12 @@ impl eframe::App for WindowMain {
                 .collapsible(false)
                 .resizable(false)
                 .movable(true)
-                .title_bar(true)
+                .open(&mut about)
                 .show(ctx, |ui| {
                     popups::about::window(self, ui, ctx);
                 });
             }
+            self.popups.about = about;
 
             // Debug
             if self.popups.debug {
@@ -375,8 +377,9 @@ impl eframe::App for WindowMain {
                     DebugStatType::FrameTotal
                 );
             };
-
-            ctx.request_repaint();
+            if self.options.general.low_power_mode == false {
+                ctx.request_repaint();
+            };
         }
     }
 }
