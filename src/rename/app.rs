@@ -294,11 +294,19 @@ impl WindowMain {
         };
         for (index, folder) in renamed.iter().enumerate() {
             for (_, fold) in folder.0.iter().enumerate() {
-                self.file_selector.folders[index].list_folders[fold.1].name_modified = fold.0.to_owned();
-            }
+                if self.file_selector.folders[index].list_folders.len() > fold.1 {
+                    self.file_selector.folders[index].list_folders[fold.1].name_modified = fold.0.to_owned();
+                } else {
+                    return;
+                };
+            };
             for (_, file) in folder.1.iter().enumerate() {
-                self.file_selector.folders[index].list_files[file.1].name_modified = file.0.to_owned();
-            }
+                if self.file_selector.folders[index].list_files.len() > file.1 {
+                    self.file_selector.folders[index].list_files[file.1].name_modified = file.0.to_owned();
+                } else {
+                    return;
+                };
+            };
         };
         for(_, folders) in self.file_selector.folders.iter_mut().enumerate() {
             for (_, fold) in folders.list_folders.iter_mut().enumerate() {

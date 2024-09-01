@@ -63,9 +63,9 @@ pub fn selector(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                     .body(|mut body| {
                         if gui.file_selector.allow_frame == false { return };
                         for (index, folder) in gui.file_selector.folders.clone() .iter().enumerate(){
-                            let mut tables = fill_table(gui, &mut body, folder, index, available_width);
-                            gui.file_selector.folders[index].selected_folders = tables.remove(0);
-                            gui.file_selector.folders[index].selected_files = tables.remove(0);
+                            let tables = fill_table(gui, &mut body, folder, index, available_width);
+                            gui.file_selector.folders[index].selected_folders = tables[0].clone();
+                            gui.file_selector.folders[index].selected_files = tables[1].clone();
                         }
                     });
                 });
