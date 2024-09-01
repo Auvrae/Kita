@@ -44,20 +44,22 @@ For a more detailed list of features, check the docs!
 
 ## Building
 
-To Build this project on run
+#### Prerequisites
+Make sure you have the following installed on your target platform: `git`,`rust`,`cargo`
 
 **Linux**
 ```bash
   git clone https://github.com/Auvrae/Kita
   cargo build -r
-  mv ./target/release/kita ./Kita
-  rm -r ./target
 ```
+The executable will be in ./target/release named kita.
 
 **Windows**
 ```bat
-   TBD
+   git clone https://github.com/Auvrae/Kita
+   cargo build -r
 ```
+The executable will be in ./target/release named kita.exe.
 
 If you don't feel like building yourself you can download the latest version [here](https://github.com/Auvrae/Kita/releases).
 ## Upcoming Features
