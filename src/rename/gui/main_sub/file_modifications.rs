@@ -86,7 +86,7 @@ pub fn modifications(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Conte
             // Body
             ui.allocate_ui(egui::vec2(ui.available_width(), ui.available_height() - 80.0), |ui| {
                 egui::ScrollArea::vertical()
-                .id_source("Modifiers")
+                .id_salt("Modifiers")
                 .enable_scrolling(gui.modifiers.scroll_allowed)
                 .show(ui, |ui| {
                     let mut from: Option<Arc<DndDropLocation>> = None;

@@ -5,7 +5,7 @@ use super::super::util::{config, dir};
 use std::fs;
 
 pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
-    if args.len() >= 1 {
+    if !args.is_empty() {
         let mut check_for_path: Vec<String> = vec![];
         let mut operator: CliArgType = CliArgType::None;
         let mut verified_path: Option<String> = None;
@@ -17,10 +17,10 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
                         "Kita Rename Utility v",
                         env!("CARGO_PKG_VERSION").to_string(),
                         " usage:\n",
-                        "-h | --help         : Help\n",
-                        "-o <path>           : Opens Kita (gui) to a path\n",
-                        "-op <path> <preset> : Opens Kita (gui) to a path with a preset pre-selected\n",
-                        "-ap <path> <preset> : Applies a preset to a path (cli) (upcoming feature)\n\n",
+                        "-h | --help                           : Help\n",
+                        "-o <path>                             : Opens Kita (gui) to a path\n",
+                        "-op <path> <preset>                   : Opens Kita (gui) to a path with a preset pre-selected\n",
+                        "-ap <path> <preset> <file,extensions> : Applies a preset to a path (cli) (upcoming feature)\n\n",
                         "Submit a bug report here:  https://github.com/Auvrae/Kita/issues"
                     ));
                     std::process::exit(0);
@@ -62,8 +62,8 @@ pub fn parse_arguments(app: &mut WindowMain, args: Vec<String>) -> CliResult {
                     app.popups.save_as_preset_field_name = preset.name.to_owned();
                 } else {
                     return CliResult::Error(String::from(format!("{}{}",
-                        "Could not find that preset. Check to make sure you've used",
-                        "the right name! If it has spaces, surround it in \"<Preset_Name>\""
+                        "Could not find that preset. Check to make sure you've used ",
+                        "the right name! If it has spaces, surround it in \"Quotes\""
                     )))
                 };
                 let path: String;
@@ -191,9 +191,22 @@ fn apply_preset(app: &mut WindowMain, path: String, preset: Preset) -> Result<()
     app.modifiers = preset.modifiers.to_owned();
     app.options.modifier_order.0 = preset.modifier_order.to_owned();
     let folder = dir::get_folder(path, true).unwrap();
-
+    let selected_files: Vec<String> = vec![];
+    let selected_folers: Vec<String> = vec![];
+    
     // Select files based on Preset
-     
+    for (index, extension) in preset.file_extension_filter.iter().enumerate() {
+        if preset.include_files == true {
+            for (file_index, file) in folder.list_files.iter().enumerate() {
+                
+            };
+        };
+        if preset.include_folders == true {
+            for (folder_index, folder) in folder.list_folders.iter().enumerate() {
+
+            };
+        };
+    };
 
 
     Err(String::from("Work in Progress"))

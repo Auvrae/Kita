@@ -125,7 +125,6 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                                     let slider = ui.add(
                                         egui::Slider::new(&mut gui.options.gui_scale, std::ops::RangeInclusive::new(0.5, 1.5))
                                         .fixed_decimals(2)
-                                        .clamp_to_range(true)
                                         .show_value(true)
                                         .logarithmic(false)
                                         .step_by(0.05)
@@ -161,7 +160,6 @@ pub fn window(gui: &mut WindowMain, ui: &mut egui::Ui, _ctx: &egui::Context) {
                                     let slider = ui.add(
                                     egui::Slider::new(&mut gui.options.saving.io_operation_waittime, std::ops::RangeInclusive::new(0, 5))
                                     .fixed_decimals(0)
-                                    .clamp_to_range(true)
                                     .show_value(true)
                                     .logarithmic(false)
                                     .step_by(1.0)

@@ -22,7 +22,7 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
                         recent_enabled = true;
                     } else {
                         recent_enabled = false;
-                    }
+                    };
                     ui.add_enabled_ui(recent_enabled, |ui| {
                         ui.menu_button("Open recent..", |ui| {
                             for (index, recent_path) in gui.options.recently_opened.iter().enumerate() {
@@ -47,19 +47,21 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
                                             gui.file_browser.browse_to(recent_path.to_owned()).unwrap();
                                         },
                                         Err(_) => {}
-                                    }
+                                    };
                                 };
+                                
                                 if selectable.secondary_clicked() {
                                     gui.options.recently_opened_menu_opened = Some(index);
-                                }
+                                };
+
                                 if gui.options.recently_opened_menu_opened.is_some() {
                                     let label_index = gui.options.recently_opened_menu_opened.clone().take().unwrap();
                                     selectable.context_menu(|ui| {
                                         // Implement right-click options
                                         
                                     });
-                                }
-                            }
+                                };
+                            };
                         });
                     });
                     ui.add_enabled_ui(gui.options.recently_opened.len() >= 1, |ui| {
@@ -71,7 +73,7 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
                         };
                         if clear_button.hovered() {
                             clear_button.on_hover_text("Clears the recently opened paths");
-                        }
+                        };
                     });
 
                     ui.separator();
@@ -79,11 +81,11 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
                     if ui.button("Quit").clicked() {
                         gui.popups.quit = !gui.popups.quit;
                         ui.close_menu();
-                    }
+                    };
                 });
                 if file_menu.response.lost_focus() {
                     gui.options.recently_opened_menu_opened = None;
-                }
+                };
 
                 ui.menu_button("Edit", |ui| {
                     // Undo
@@ -121,24 +123,17 @@ pub fn bar(gui: &mut WindowMain, ctx: &Context) {
                     };
     
                     ui.separator();
-                    
-                    ui.add_enabled_ui(false, |ui| {
-                        if ui.button("Preset Manager").clicked() {
-                            ui.close_menu();
-                        };
-                    });
-                    /*
+
                     if ui.button("Preset Manager").clicked() && gui.is_popup_open() == false {
                         gui.popups.preset_manager = !gui.popups.preset_manager;
                         ui.close_menu();
-                    }
-                    */
+                    };
                 });
                 ui.menu_button("About", |ui| {
                     if ui.button("Kita Rename Utility").clicked() {
                         gui.popups.about = !gui.popups.about;
                         ui.close_menu();
-                    }
+                    };
                 });
             });
         });

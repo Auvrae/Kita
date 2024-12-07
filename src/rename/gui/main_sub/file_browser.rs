@@ -76,7 +76,7 @@ pub fn browser(gui: &mut WindowMain, ui: &mut egui::Ui, ctx: &egui::Context) {
     
             // Body
             egui::ScrollArea::both()
-            .id_source("Broswer")
+            .id_salt("Broswer")
             .show(ui, |ui| {
                 ui.set_width(ui.available_width());
                 ui.set_min_height(ui.available_height());
